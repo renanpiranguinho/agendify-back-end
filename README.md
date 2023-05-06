@@ -1,4 +1,4 @@
-# Smart-urban-parking-back-end
+# Agendify-back-end
 Back-end for a system of schedule control system
 
 <p align="center">
