@@ -13,7 +13,7 @@ async function bootstrap() {
   );
 
   const config = new DocumentBuilder()
-    .setTitle('Movie Ratings')
+    .setTitle('Agendify')
     .setDescription('Movie review api')
     .setVersion('1.0')
     .addTag('Documentation')
