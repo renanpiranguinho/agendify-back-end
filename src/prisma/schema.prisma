@@ -1,0 +1,130 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum Role {
+  USER
+  PROVIDER
+  ADMIN
+}
+
+model User {
+  id         String       @id @default(uuid())
+  email      String       @unique()
+  name       String       @db.VarChar(255)
+  password   String
+  is_active  Boolean      @default(false)
+  role       Role         @default(USER)
+  created_at DateTime     @default(now())
+  updated_at DateTime     @updatedAt()
+  deleted_at DateTime?
+  Business   Business[]
+  Scheduling Scheduling[]
+  Rating     Rating[]
+}
+
+model Business {
+  id              String        @id @default(uuid())
+  name            String        @db.VarChar(255)
+  is_operating    Boolean
+  description     String
+  image_url       String?
+  telephone       String        @unique
+  address         Address?      @relation(fields: [address_id], references: [id])
+  address_id      String?
+  user            User          @relation(fields: [owner_id], references: [id])
+  owner_id        String
+  Category        Category?     @relation(fields: [category_id], references: [id])
+  category_id     String?       @unique
+  Availability    Availability? @relation(fields: [availability_id], references: [id])
+  availability_id String?
+  created_at      DateTime      @default(now())
+  updated_at      DateTime      @updatedAt()
+  Service         Service[]
+  Rating          Rating[]
+}
+
+model Address {
+  id          String     @id @default(uuid())
+  postal_code String     @db.Char(8)
+  number      String
+  street      String
+  district    String
+  city        String
+  state       String
+  created_at  DateTime   @default(now())
+  updated_at  DateTime   @updatedAt()
+  Business    Business[]
+}
+
+model Rating {
+  id          String   @id @default(uuid())
+  rating      Int      @db.Integer
+  description String?
+  User        User     @relation(fields: [user_id], references: [id])
+  user_id     String
+  business    Business @relation(fields: [business_id], references: [id])
+  business_id String
+  created_at  DateTime @default(now())
+  updated_at  DateTime @updatedAt()
+}
+
+model Category {
+  id         String     @id @default(uuid())
+  name       String     @db.VarChar(255)
+  created_at DateTime
+  updated_at DateTime
+  Business   Business[]
+}
+
+model Service {
+  id          String       @id @default(uuid())
+  name        String       @db.VarChar(255)
+  description String
+  image_url   String?
+  duration    DateTime?
+  price       Float?
+  business    Business     @relation(fields: [business_id], references: [id])
+  business_id String
+  created_at  DateTime     @default(now())
+  updated_at  DateTime     @updatedAt()
+  Scheduling  Scheduling[]
+}
+
+model Scheduling {
+  id         String   @id @default(uuid())
+  datetime   DateTime
+  user       User     @relation(fields: [user_id], references: [id])
+  user_id    String
+  Service    Service  @relation(fields: [service_id], references: [id])
+  service_id String
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt()
+}
+
+model Availability {
+  id          String     @id @default(uuid())
+  start_time  DateTime
+  end_time    DateTime
+  WeekDays    WeekDays?  @relation(fields: [weekdays_id], references: [id])
+  weekdays_id String?
+  created_at  DateTime
+  updated_at  DateTime
+  Business    Business[]
+}
+
+model WeekDays {
+  id           String         @id @default(uuid())
+  name         String         @db.VarChar(50)
+  created_at   DateTime
+  updated_at   DateTime
+  Availability Availability[]
+}
