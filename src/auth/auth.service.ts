@@ -9,7 +9,7 @@ import { UsersRepository } from '..//models/users/repository/user.repository';
 import { GenerateToken } from '../providers/generate-token';
 
 interface ITokenPayload {
-  sub: number;
+  sub: string;
 }
 @Injectable()
 export class AuthService {
@@ -25,13 +25,10 @@ export class AuthService {
     login,
     password,
   }: CreateAuthDto): Promise<User | false> {
-    let user = await this.usersRepository.findByEmail(login);
+    const user = await this.usersRepository.findByEmail(login);
 
     if (!user) {
-      user = await this.usersRepository.findByCpf(login);
-      if (!user) {
-        return false;
-      }
+      return false;
     }
 
     const passwordHasMatch = await this.encryptDate.decrypt(
