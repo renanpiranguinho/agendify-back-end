@@ -10,19 +10,18 @@ import { IUsersRepository } from './i-users-repository';
 export class UsersRepository implements IUsersRepository {
   constructor(private readonly prismaService: PrismaService) {}
 
-  async create({ email, name, password, cpf }: CreateUserDto): Promise<User> {
+  async create({ email, name, password }: CreateUserDto): Promise<User> {
     const newUser = await this.prismaService.user.create({
       data: {
         name,
         email,
         password,
-        cpf,
       },
     });
     return newUser;
   }
 
-  async findById(id: number): Promise<User> {
+  async findById(id: string): Promise<User> {
     const userFound = await this.prismaService.user.findFirst({
       where: { id, deleted_at: null },
     });
@@ -38,14 +37,6 @@ export class UsersRepository implements IUsersRepository {
     return userFound;
   }
 
-  async findByCpf(cpf: string): Promise<User> {
-    const userFound = await this.prismaService.user.findFirst({
-      where: { cpf },
-    });
-
-    return userFound;
-  }
-
   async findAll(): Promise<User[]> {
     const allUsers = await this.prismaService.user.findMany({
       where: { deleted_at: null },
@@ -55,13 +46,12 @@ export class UsersRepository implements IUsersRepository {
   }
 
   async updateById(
-    id: number,
-    { cpf, name, email, password, is_active }: UpdateUserDto,
+    id: string,
+    { name, email, password, is_active }: UpdateUserDto,
   ): Promise<User> {
     const updatedUser = await this.prismaService.user.update({
       where: { id },
       data: {
-        cpf,
         name,
         email,
         password,
@@ -74,12 +64,11 @@ export class UsersRepository implements IUsersRepository {
 
   async updateByEmail(
     email: string,
-    { cpf: cpf, email: newEmail, password }: UpdateUserDto,
+    { email: newEmail, password }: UpdateUserDto,
   ): Promise<User> {
     const updatedUser = await this.prismaService.user.update({
       where: { email },
       data: {
-        cpf: cpf,
         email: newEmail,
         password,
       },
@@ -88,7 +77,7 @@ export class UsersRepository implements IUsersRepository {
     return updatedUser;
   }
 
-  async softDelete(id: number): Promise<User> {
+  async softDelete(id: string): Promise<User> {
     const deletedUser = await this.prismaService.user.update({
       where: { id },
       data: { deleted_at: new Date(), is_active: false },
@@ -97,7 +86,7 @@ export class UsersRepository implements IUsersRepository {
     return deletedUser;
   }
 
-  async setRoleById(id: number, { role }: SetRoleDto): Promise<User> {
+  async setRoleById(id: string, { role }: SetRoleDto): Promise<User> {
     const updatedUser = await this.prismaService.user.update({
       where: { id },
       data: {

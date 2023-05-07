@@ -44,7 +44,7 @@ export class UsersController {
     return response;
   }
 
-  @Roles(Role.ADMIN, Role.FISCAL)
+  @Roles(Role.ADMIN, Role.PROVIDER)
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<NestResponse> {
@@ -70,11 +70,11 @@ export class UsersController {
     return response;
   }
 
-  @Roles(Role.ADMIN, Role.FISCAL)
+  @Roles(Role.ADMIN, Role.PROVIDER)
   @UseGuards(JwtAuthGuard)
   @ApiBearerAuth()
   @Get(':id')
-  async findOne(@Param('id') id: number): Promise<NestResponse> {
+  async findOne(@Param('id') id: string): Promise<NestResponse> {
     const userFound = await this.usersService.findById(id);
 
     const response = new NestResponseBuilder()
@@ -89,7 +89,7 @@ export class UsersController {
   @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body(UserPipe) updateUserDto: UpdateUserDto,
   ): Promise<NestResponse> {
     const updatedUser = await this.usersService.update(id, updateUserDto);
@@ -106,7 +106,7 @@ export class UsersController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async remove(@Param('id') id: number): Promise<NestResponse> {
+  async remove(@Param('id') id: string): Promise<NestResponse> {
     const deletedUser = await this.usersService.remove(id);
 
     const response = new NestResponseBuilder()
@@ -122,7 +122,7 @@ export class UsersController {
   @ApiBearerAuth()
   @Post('/setRole/:id')
   async setRole(
-    @Param('id') id: number,
+    @Param('id') id: string,
     @Body() setRoleDto: SetRoleDto,
   ): Promise<NestResponse> {
     const userUpdated = await this.usersService.setRole(id, setRoleDto);

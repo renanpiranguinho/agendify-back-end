@@ -20,13 +20,12 @@ export class UsersService {
     private readonly encryptData: EncryptData,
   ) {}
 
-  async create({ cpf, name, email, password }: CreateUserDto): Promise<User> {
+  async create({ name, email, password }: CreateUserDto): Promise<User> {
     const userAlreadyExists = await this.usersRepository.findByEmail(email);
 
     if (userAlreadyExists) {
       if (userAlreadyExists.deleted_at) {
         const activeUser = await this.usersRepository.updateByEmail(email, {
-          cpf,
           name,
           email,
           password,
@@ -49,7 +48,6 @@ export class UsersService {
     }
 
     const newUser = await this.usersRepository.create({
-      cpf,
       name,
       email,
       password,
@@ -70,7 +68,7 @@ export class UsersService {
     return allUsers.map((user) => new User(user));
   }
 
-  async findById(id: number): Promise<User> {
+  async findById(id: string): Promise<User> {
     const user = await this.usersRepository.findById(id);
 
     if (!user) {
@@ -84,8 +82,8 @@ export class UsersService {
   }
 
   async update(
-    id: number,
-    { name, cpf, email, password }: UpdateUserDto,
+    id: string,
+    { name, email, password }: UpdateUserDto,
   ): Promise<User> {
     const user = await this.usersRepository.findById(id);
 
@@ -98,7 +96,6 @@ export class UsersService {
 
     const updatedUser = await this.usersRepository.updateById(id, {
       name,
-      cpf,
       email,
       password: password && password,
     });
@@ -106,7 +103,7 @@ export class UsersService {
     return new User(updatedUser);
   }
 
-  async remove(id: number): Promise<User> {
+  async remove(id: string): Promise<User> {
     try {
       const deletedUser = await this.usersRepository.softDelete(id);
 
@@ -119,7 +116,7 @@ export class UsersService {
     }
   }
 
-  async setRole(id: number, { role }: SetRoleDto): Promise<User> {
+  async setRole(id: string, { role }: SetRoleDto): Promise<User> {
     const user = await this.usersRepository.findById(id);
 
     if (!user) {

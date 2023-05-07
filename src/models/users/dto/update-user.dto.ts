@@ -8,11 +8,6 @@ export class UpdateUserDto extends PartialType(CreateUserDto) {
   })
   name?: string;
 
-  @IsString({
-    message: 'Invalid CPF is format',
-  })
-  cpf?: string;
-
   @IsEmail(
     {},
     {
