@@ -17,8 +17,7 @@ import { Role } from 'src/models/users/enums/role.enum';
 
 export interface IUserRequestData {
   user: {
-    id: number;
-    cpf: string;
+    id: string;
     email: string;
     role: Role;
     is_active: boolean;

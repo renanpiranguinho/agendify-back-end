@@ -13,13 +13,11 @@ export class UserPipe implements PipeTransform {
   constructor(private readonly encryptData: EncryptData) {}
   async transform({
     name,
-    cpf,
     email,
     password,
   }: CreateUserDto | UpdateUserDto): Promise<CreateUserDto | UpdateUserDto> {
     const user = {
       name: name,
-      cpf: cpf,
       email: email,
       password: password,
     };
@@ -38,22 +36,6 @@ export class UserPipe implements PipeTransform {
 
       const passwordHash = await this.encryptData.encrypt(password, 10);
       user.password = passwordHash;
-    }
-
-    if (cpf) {
-      const cpfHasValid = cpf.match(
-        /^[0-9]{3}\.?[0-9]{3}\.?[0-9]{3}\-?[0-9]{2}$/g,
-      );
-
-      if (!cpfHasValid) {
-        throw new BadRequestException({
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: 'CPF not match with requirements',
-        });
-      }
-
-      const cpfFormatted = cpf.replace(/[\.-]/g, '');
-      user.cpf = cpfFormatted;
     }
 
     return user;

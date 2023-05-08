@@ -2,9 +2,8 @@ import { Role } from '@prisma/client';
 import { Exclude } from 'class-transformer';
 
 export class User {
-  id: number;
+  id: string;
   name: string;
-  cpf: string;
   email: string;
 
   @Exclude()
