@@ -28,23 +28,9 @@ services:
     networks:
       - app-net
 
-  ntfy:
-    image: binwiederhier/ntfy
-    container_name: ntfy_container
-    command:
-      - serve
-    volumes:
-      - /var/cache/ntfy:/var/cache/ntfy
-      - /etc/ntfy:/etc/ntfy
-    ports:
-      - ${NOTIFICATION_PORT}:80
-    networks:
-      - app-net
-
 volumes:
   pgdata:
   redis:
-  ntfy:
 
 networks:
   app-net:
