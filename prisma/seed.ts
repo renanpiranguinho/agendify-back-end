@@ -10,10 +10,9 @@ async function main() {
     where: { email: process.env.ADMIN_EMAIL },
     update: {},
     create: {
-      email: process.env.ADMIN_EMAIL,
-      name: process.env.ADMIN_NAME,
-      cpf: '000.000.000-00',
-      password: await encryptDate.encrypt(process.env.ADMIN_PASSWORD, 10),
+      email: process.env.ADMIN_EMAIL ?? 'admin@email.com',
+      name: process.env.ADMIN_NAME ?? 'admin',
+      password: await encryptDate.encrypt(process.env.ADMIN_PASSWORD ?? 'Admin!12345', 10),
       is_active: true,
       role: Role.ADMIN,
     },
