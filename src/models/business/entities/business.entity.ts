@@ -11,8 +11,9 @@ export class Business {
 
   created_at: Date;
   updated_at?: Date;
+  deleted_at?: Date;
 
-  constructor(user: Partial<Business>) {
-    Object.assign(this, user);
+  constructor(business: Partial<Business>) {
+    Object.assign(this, business);
   }
 }

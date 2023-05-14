@@ -142,7 +142,7 @@ export class BusinessService {
       });
     }
 
-    const updatedUser = await this.businessRepository.updateById(id, {
+    const updatedBusiness = await this.businessRepository.updateById(id, {
       address,
       category_id,
       description,
@@ -152,10 +152,25 @@ export class BusinessService {
       telephone,
     });
 
-    return new Business(updatedUser);
+    return new Business(updatedBusiness);
   }
 
-  remove(id: string) {
-    return `This action removes a #${id} business`;
+  async remove(id: string) {
+    try {
+      const businessDeleted = await this.businessRepository.softDelete(id);
+
+      if (!businessDeleted)
+        throw new NotFoundException({
+          statusCode: HttpStatus.NOT_FOUND,
+          message: 'Business not found',
+        });
+
+      return new Business(businessDeleted);
+    } catch (error) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business not deleted',
+      });
+    }
   }
 }

@@ -88,7 +88,10 @@ export class BusinessController {
     @Param('id') id: string,
     @Body() updateBusinessDto: UpdateBusinessDto,
   ): Promise<NestResponse> {
-    const updatedBusiness = await this.businessService.update(id, updateBusinessDto);
+    const updatedBusiness = await this.businessService.update(
+      id,
+      updateBusinessDto,
+    );
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)
