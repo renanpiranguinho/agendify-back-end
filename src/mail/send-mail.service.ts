@@ -3,20 +3,10 @@ import { Injectable } from '@nestjs/common';
 import { Queue } from 'bull';
 import { JobsEnum } from './enums/jobs.enum';
 import { RedisQueueEnum } from './enums/redis-queue.enum';
-
-interface SendConfirmationMailDto {
-  email: string;
-  name: string;
-  url: string;
-}
-
-interface SendPaymentVoucherMailDto {
-  email: string;
-  name: string;
-  license_plate: string;
-  price: string;
-  validity: string;
-}
+import {
+  SendConfirmationMailDto,
+  SendSchedulingVoucherMailDto,
+} from './dto/send-mail.dto';
 
 @Injectable()
 export class SendMailService {
@@ -28,12 +18,12 @@ export class SendMailService {
     await this.mailQueue.add(JobsEnum.SEND_MAIL, sendConfirmationMailDto);
   }
 
-  async sendPaymentVoucherMail(
-    sendPaymentVoucherMailDto: SendPaymentVoucherMailDto,
+  async sendSchedulingVoucherMail(
+    sendSchedulingVoucherMailDto: SendSchedulingVoucherMailDto,
   ) {
     await this.mailQueue.add(
-      JobsEnum.SEND_PAYMENT_VOUCHER,
-      sendPaymentVoucherMailDto,
+      JobsEnum.SEND_SCHEDULING_VOUCHER,
+      sendSchedulingVoucherMailDto,
     );
   }
 }
