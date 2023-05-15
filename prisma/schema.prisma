@@ -32,24 +32,24 @@ model User {
 }
 
 model Business {
-  id              String        @id @default(uuid())
-  name            String        @db.VarChar(255)
-  is_operating    Boolean
-  description     String
-  image_url       String?
-  telephone       String        @unique
-  address         Address?      @relation(fields: [address_id], references: [id])
-  address_id      String?
-  user            User          @relation(fields: [owner_id], references: [id])
-  owner_id        String
-  Category        Category?     @relation(fields: [category_id], references: [id])
-  category_id     String?       @unique
-  Availability    Availability? @relation(fields: [availability_id], references: [id])
-  availability_id String?
-  created_at      DateTime      @default(now())
-  updated_at      DateTime      @updatedAt()
-  Service         Service[]
-  Rating          Rating[]
+  id           String         @id @default(uuid())
+  name         String         @db.VarChar(255)
+  is_operating Boolean
+  description  String
+  image_url    String?
+  telephone    String         @unique
+  address      Address?       @relation(fields: [address_id], references: [id])
+  address_id   String?
+  user         User           @relation(fields: [owner_id], references: [id])
+  owner_id     String
+  Category     Category       @relation(fields: [category_id], references: [id])
+  category_id  String
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt()
+  deleted_at   DateTime?      @default(now())
+  Service      Service[]
+  Rating       Rating[]
+  Availability Availability[]
 }
 
 model Address {
@@ -80,8 +80,8 @@ model Rating {
 model Category {
   id         String     @id @default(uuid())
   name       String     @db.VarChar(255)
-  created_at DateTime
-  updated_at DateTime
+  created_at DateTime   @default(now())
+  updated_at DateTime   @updatedAt()
   Business   Business[]
 }
 
@@ -111,14 +111,15 @@ model Scheduling {
 }
 
 model Availability {
-  id          String     @id @default(uuid())
+  id          String    @id @default(uuid())
   start_time  DateTime
   end_time    DateTime
-  WeekDays    WeekDays?  @relation(fields: [weekdays_id], references: [id])
+  WeekDays    WeekDays? @relation(fields: [weekdays_id], references: [id])
   weekdays_id String?
   created_at  DateTime
   updated_at  DateTime
-  Business    Business[]
+  business_id String
+  Business    Business  @relation(fields: [business_id], references: [id])
 }
 
 model WeekDays {

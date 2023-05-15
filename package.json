@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "prisma": {
-    "seed": "ts-node --compiler-options {\"module\":\"CommonJS\"} prisma/seed.ts"
+    "seed": "ts-node prisma/seed.ts"
   },
   "scripts": {
     "prebuild": "rimraf dist",
@@ -22,31 +22,31 @@
     "test:cov": "jest --coverage",
     "test:debug": "node --inspect-brk -r tsconfig-paths/register -r ts-node/register node_modules/.bin/jest --runInBand",
     "test:e2e": "jest --config ./test/jest-e2e.json",
-    "prisma:seed": "ts-node prisma/seed.ts",
-    "prisma:migrate":  "npx prisma migrate dev"
+    "prisma:seed": "npx prisma db seed",
+    "prisma:migrate": "npx prisma migrate dev"
   },
   "dependencies": {
     "@casl/ability": "^5.4.3",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/bull": "^0.6.1",
-    "@nestjs/common": "^8.0.0",
-    "@nestjs/core": "^8.0.0",
-    "@nestjs/jwt": "^8.0.0",
+    "@nestjs/common": "^9.4.0",
+    "@nestjs/core": "^9.4.0",
+    "@nestjs/jwt": "^10.0.3",
     "@nestjs/mapped-types": "^1.0.1",
     "@nestjs/passport": "^8.1.0",
-    "@nestjs/platform-express": "^8.0.0",
+    "@nestjs/platform-express": "^9.4.0",
     "@nestjs/schedule": "^2.1.0",
-    "@nestjs/swagger": "^5.2.0",
+    "@nestjs/swagger": "^6.3.0",
     "@prisma/client": "^3.15.2",
     "bcryptjs": "^2.4.3",
     "bull": "^4.10.1",
     "class-transformer": "^0.5.1",
-    "class-validator": "^0.13.2",
+    "class-validator": "^0.14.0",
     "dayjs": "^1.11.0",
     "handlebars": "^4.7.7",
-    "mercadopago": "^1.5.14",
+    "mercadopago": "^0.0.6",
     "nodemailer": "^6.8.0",
-    "passport": "^0.5.2",
+    "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",
     "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.13",
@@ -56,9 +56,9 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^8.2.1",
+    "@nestjs/cli": "^9.4.2",
     "@nestjs/schematics": "^8.0.0",
-    "@nestjs/testing": "^8.0.0",
+    "@nestjs/testing": "^9.4.0",
     "@types/bcryptjs": "^2.4.2",
     "@types/bull": "^3.15.8",
     "@types/cron": "^2.0.0",
