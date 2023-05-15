@@ -3,20 +3,10 @@ import { Process, Processor } from '@nestjs/bull';
 import { Job } from 'bull';
 import { JobsEnum } from './enums/jobs.enum';
 import { RedisQueueEnum } from './enums/redis-queue.enum';
-
-interface SendConfirmationMailDto {
-  email: string;
-  name: string;
-  url: string;
-}
-
-interface SendPaymentVoucherMailDto {
-  email: string;
-  name: string;
-  license_plate: string;
-  price: string;
-  validity: string;
-}
+import {
+  SendConfirmationMailDto,
+  SendSchedulingVoucherMailDto,
+} from './dto/send-mail.dto';
 
 @Processor(RedisQueueEnum.MAIL_QUEUE)
 export class SendMailConsumer {
@@ -29,7 +19,7 @@ export class SendMailConsumer {
     await this.mailerService.sendMail({
       to: email,
       from: process.env.EMAIL_LOGIN,
-      subject: 'Estacione Aqui | Confirmação',
+      subject: 'Agendify | Confirmação',
       template: 'confirmation.hbs',
       context: {
         name,
@@ -38,20 +28,23 @@ export class SendMailConsumer {
     });
   }
 
-  @Process(JobsEnum.SEND_PAYMENT_VOUCHER)
-  async sendPaymentVoucherMailConsumer(job: Job<SendPaymentVoucherMailDto>) {
-    const { email, name, license_plate, price, validity } = job.data;
+  @Process(JobsEnum.SEND_SCHEDULING_VOUCHER)
+  async sendSchedulingVoucherMailConsumer(
+    job: Job<SendSchedulingVoucherMailDto>,
+  ) {
+    const { email, name, date, time, businessName } = job.data;
 
     await this.mailerService.sendMail({
       to: email,
       from: process.env.EMAIL_LOGIN,
-      subject: 'Estacione Aqui | Comprovante',
-      template: 'payment-voucher.hbs',
+      subject: 'Agendify | Comprovante',
+      template: 'scheduling-voucher.hbs',
       context: {
         name,
-        license_plate,
-        price,
-        validity,
+        email,
+        date,
+        time,
+        businessName,
       },
     });
   }
