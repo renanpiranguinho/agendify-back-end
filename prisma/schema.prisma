@@ -90,7 +90,7 @@ model Service {
   name        String       @db.VarChar(255)
   description String
   image_url   String?
-  duration    DateTime?
+  duration    String?
   price       Float?
   business    Business     @relation(fields: [business_id], references: [id])
   business_id String
