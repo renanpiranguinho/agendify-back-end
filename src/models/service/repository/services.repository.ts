@@ -17,7 +17,7 @@ export class ServicesRepository implements IServiceRepository {
     price,
     business_id,
   }: CreateServiceDto): Promise<Service> {
-    const newBusiness = await this.prismaService.service.create({
+    const newService = await this.prismaService.service.create({
       data: {
         name,
         description,
@@ -27,23 +27,23 @@ export class ServicesRepository implements IServiceRepository {
         business_id,
       },
     });
-    return newBusiness;
+    return newService;
   }
 
   async findAll(): Promise<Service[]> {
-    const allBusiness = await this.prismaService.service.findMany({
+    const allServices = await this.prismaService.service.findMany({
       where: {},
     });
 
-    return allBusiness;
+    return allServices;
   }
 
   async findById(id: string): Promise<Service> {
-    const businessFound = await this.prismaService.service.findFirst({
+    const serviceFound = await this.prismaService.service.findFirst({
       where: { id },
     });
 
-    return businessFound;
+    return serviceFound;
   }
 
   async updateById(
@@ -57,7 +57,7 @@ export class ServicesRepository implements IServiceRepository {
       business_id,
     }: UpdateServiceDto,
   ): Promise<Service> {
-    const updatedUser = await this.prismaService.service.update({
+    const updatedService = await this.prismaService.service.update({
       where: { id },
       data: {
         name,
@@ -69,7 +69,7 @@ export class ServicesRepository implements IServiceRepository {
       },
     });
 
-    return updatedUser;
+    return updatedService;
   }
 
   async delete(id: string): Promise<Service> {

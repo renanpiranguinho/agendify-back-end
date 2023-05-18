@@ -77,7 +77,7 @@ export class BusinessRepository implements IBusinessRepository {
       telephone,
     }: UpdateBusinessDto,
   ): Promise<Business> {
-    const updatedUser = await this.prismaService.business.update({
+    const updatedBusiness= await this.prismaService.business.update({
       where: { id },
       data: {
         name,
@@ -91,7 +91,7 @@ export class BusinessRepository implements IBusinessRepository {
       },
     });
 
-    return updatedUser;
+    return updatedBusiness;
   }
 
   async softDelete(id: string): Promise<Business> {
