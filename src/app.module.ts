@@ -9,9 +9,16 @@ import { UsersModule } from './models/users/users.module';
 import { SendMailModule } from './mail/send-mail.module';
 import { AuthModule } from './auth/auth.module';
 import { BusinessModule } from './models/business/business.module';
+import { ServicesModule } from './models/service/services.module';
 
 @Module({
-  imports: [UsersModule, AuthModule, SendMailModule, BusinessModule],
+  imports: [
+    UsersModule,
+    AuthModule,
+    SendMailModule,
+    BusinessModule,
+    ServicesModule,
+  ],
   providers: [
     PrismaService,
     {

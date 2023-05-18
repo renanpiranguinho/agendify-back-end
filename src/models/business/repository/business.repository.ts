@@ -97,7 +97,7 @@ export class BusinessRepository implements IBusinessRepository {
   async softDelete(id: string): Promise<Business> {
     const deletedBusiness = await this.prismaService.business.update({
       where: { id },
-      data: { is_operating: false, deleted_at: new Date() },
+      data: { deleted_at: new Date(), is_operating: false },
     });
 
     return deletedBusiness;
