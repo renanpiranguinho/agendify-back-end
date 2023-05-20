@@ -39,7 +39,7 @@ export class BusinessRepository implements IBusinessRepository {
     });
 
     const allBusinessIsOperating = allBusiness.filter(
-      (business) => business.is_operating === true,
+      (business) => business.is_operating,
     );
 
     return allBusinessIsOperating;
@@ -67,7 +67,7 @@ export class BusinessRepository implements IBusinessRepository {
     });
 
     const businessFoundIsOperating = businessFound.filter(
-      (business) => business.is_operating === true,
+      (business) => business.is_operating,
     );
 
     return businessFoundIsOperating;
