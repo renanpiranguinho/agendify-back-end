@@ -1,4 +1,4 @@
-import { Type } from 'class-transformer';
+import { Transform, Type, plainToClass } from 'class-transformer';
 import { IsEmpty, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 class Address {
@@ -31,9 +31,7 @@ export class CreateBusinessDto {
   })
   description: string;
 
-  @IsNotEmpty({
-    message: 'field image_url is missing',
-  })
+  @IsEmpty()
   image_url: string;
 
   @IsNotEmpty({
@@ -43,6 +41,9 @@ export class CreateBusinessDto {
 
   @IsNotEmpty({
     message: 'address is missing',
+  })
+  @Transform(({ value }) => plainToClass(Address, JSON.parse(value)), {
+    toClassOnly: true,
   })
   @ValidateNested()
   @Type(() => Address)

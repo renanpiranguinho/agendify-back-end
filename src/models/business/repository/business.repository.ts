@@ -106,7 +106,7 @@ export class BusinessRepository implements IBusinessRepository {
         name,
         is_operating: true,
         description,
-        address_id: address.id,
+        address_id: address ? address.id :null,
         category_id,
         image_url,
         owner_id,
