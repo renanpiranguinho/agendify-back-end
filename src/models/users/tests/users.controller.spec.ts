@@ -14,6 +14,7 @@ import {
   mockUpdateUserReturnController,
   mockUpdateUserReturnService,
 } from './mocks';
+import { JwtService } from '@nestjs/jwt';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -40,6 +41,12 @@ describe('UsersController', () => {
               .fn()
               .mockReturnValue(mockCreateUserReturnService.password),
             decrypt: jest.fn().mockReturnValue(true),
+          },
+        },
+        {
+          provide: JwtService,
+          useValue: {
+            sign: jest.fn().mockReturnValue('token'),
           },
         },
       ],

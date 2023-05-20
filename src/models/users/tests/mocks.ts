@@ -1,23 +1,22 @@
 import { HttpStatus } from '@nestjs/common';
 import { NestResponseBuilder } from '../../../core/http/nestResponseBuilder';
+import { Role } from '../enums/role.enum';
 
 export const mockCreateUserInput = {
-  username: 'test',
+  name: 'test',
   email: 'test@test.com',
   password: '123456',
 };
 
 export const mockCreateUserReturnService = {
   id: 'f7368e17-cea9-4787-8577-ad24619532b5',
-  username: 'test',
   email: 'test@test.com',
-  password: '123456',
-  avatar_url: null,
+  name: 'test',
   is_active: false,
+  role: Role.USER,
   created_at: new Date(),
   updated_at: new Date(),
   deleted_at: null,
-  favorite_movie: null,
 };
 
 export const mockCreateUserReturnController = new NestResponseBuilder()
