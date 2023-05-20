@@ -42,7 +42,9 @@ export class UsersRepository implements IUsersRepository {
       where: { deleted_at: null },
     });
 
-    return allUsers;
+    const allUsersIsActive = allUsers.filter((user) => user.is_active);
+
+    return allUsersIsActive;
   }
 
   async updateById(

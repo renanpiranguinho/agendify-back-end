@@ -38,7 +38,11 @@ export class BusinessRepository implements IBusinessRepository {
       where: {},
     });
 
-    return allBusiness;
+    const allBusinessIsOperating = allBusiness.filter(
+      (business) => business.is_operating === true,
+    );
+
+    return allBusinessIsOperating;
   }
 
   async findById(id: string): Promise<Business> {
@@ -62,7 +66,11 @@ export class BusinessRepository implements IBusinessRepository {
       where: { owner_id },
     });
 
-    return businessFound;
+    const businessFoundIsOperating = businessFound.filter(
+      (business) => business.is_operating === true,
+    );
+
+    return businessFoundIsOperating;
   }
 
   async updateById(
