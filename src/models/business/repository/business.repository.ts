@@ -33,21 +33,40 @@ export class BusinessRepository implements IBusinessRepository {
     return newBusiness;
   }
 
-  async findAll(): Promise<Business[]> {
+  async findAll(
+    businessName?: string,
+    categoryId?: string,
+  ): Promise<Business[]> {
+    const whereCondition: {
+      name?: {
+        contains: string;
+      };
+      category_id?: string;
+      is_operating: boolean;
+    } = {
+      is_operating: true,
+    };
+
+    if (businessName) {
+      whereCondition.name = {
+        contains: businessName,
+      };
+    }
+
+    if (categoryId) {
+      whereCondition.category_id = categoryId;
+    }
+
     const allBusiness = await this.prismaService.business.findMany({
-      where: {},
+      where: whereCondition,
     });
 
-    const allBusinessIsOperating = allBusiness.filter(
-      (business) => business.is_operating,
-    );
-
-    return allBusinessIsOperating;
+    return allBusiness;
   }
 
   async findById(id: string): Promise<Business> {
     const businessFound = await this.prismaService.business.findFirst({
-      where: { id },
+      where: { id, is_operating: true },
     });
 
     return businessFound;
@@ -55,7 +74,7 @@ export class BusinessRepository implements IBusinessRepository {
 
   async findByTel(telephone: string): Promise<Business> {
     const businessFound = await this.prismaService.business.findFirst({
-      where: { telephone },
+      where: { telephone, is_operating: true },
     });
 
     return businessFound;
@@ -63,14 +82,10 @@ export class BusinessRepository implements IBusinessRepository {
 
   async findByOwner(owner_id: string): Promise<Business[]> {
     const businessFound = await this.prismaService.business.findMany({
-      where: { owner_id },
+      where: { owner_id, is_operating: true },
     });
 
-    const businessFoundIsOperating = businessFound.filter(
-      (business) => business.is_operating,
-    );
-
-    return businessFoundIsOperating;
+    return businessFound;
   }
 
   async updateById(

@@ -9,6 +9,7 @@ import {
   HttpStatus,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { BusinessService } from './business.service';
 import { CreateBusinessDto } from './dto/create-business.dto';
@@ -50,8 +51,13 @@ export class BusinessController {
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
-  async findAll(): Promise<NestResponse> {
-    const allBusiness = await this.businessService.findAll();
+  async findAll(
+    @Query() params: { business_name?: string; category_id?: string },
+  ): Promise<NestResponse> {
+    const allBusiness = await this.businessService.findAll(
+      params.business_name,
+      params.category_id,
+    );
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)
