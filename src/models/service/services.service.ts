@@ -8,7 +8,6 @@ import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { ServicesRepository } from './repository/services.repository';
 import { Service } from './entities/service.entity';
-import { PrismaService } from 'prisma/prisma.service';
 import { UsersRepository } from '../users/repository/user.repository';
 import { BusinessRepository } from '../business/repository/business.repository';
 import { Business } from '../business/entities/business.entity';
@@ -19,7 +18,6 @@ export class ServicesService {
     private readonly businessRepository: BusinessRepository,
     private readonly serviceRepository: ServicesRepository,
     private readonly usersRepository: UsersRepository,
-    private readonly prismaService: PrismaService,
   ) {}
   async create(
     {
