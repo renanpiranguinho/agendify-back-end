@@ -6,9 +6,6 @@ export interface IServiceRepository {
   create(createServiceDto: CreateServiceDto): Promise<Service>;
   findById(id: string): Promise<Service>;
   findAll(): Promise<Service[]>;
-  updateById(
-    id: string,
-    updateServiceDto: UpdateServiceDto,
-  ): Promise<Service>;
+  updateById(id: string, updateServiceDto: UpdateServiceDto): Promise<Service>;
   delete(id: string): Promise<Service>;
 }

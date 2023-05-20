@@ -1,5 +1,5 @@
 import { Type } from 'class-transformer';
-import { IsNotEmpty, IsString, ValidateNested } from 'class-validator';
+import { IsEmpty, IsNotEmpty, IsString, ValidateNested } from 'class-validator';
 
 class Address {
   readonly id: string;
@@ -48,10 +48,8 @@ export class CreateBusinessDto {
   @Type(() => Address)
   address: Address;
 
-  @IsNotEmpty({
-    message: 'field owner_id is missing',
-  })
-  owner_id: string;
+  @IsEmpty()
+  owner_id?: string;
 
   @IsNotEmpty({
     message: 'field category_id is missing',

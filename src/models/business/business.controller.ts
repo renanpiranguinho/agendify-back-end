@@ -17,8 +17,6 @@ import { NestResponseBuilder } from '../../core/http/nestResponseBuilder';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { RolesGuard } from '../../guards/roles.guard';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
-import { Roles } from '../../decorators/roles.decorator';
-import { Role } from '../users/enums/role.enum';
 import { NestResponse } from '../../core/http/nestResponse';
 import { IUserRequestData } from '../../auth/auth.controller';
 
@@ -28,9 +26,18 @@ import { IUserRequestData } from '../../auth/auth.controller';
 export class BusinessController {
   constructor(private readonly businessService: BusinessService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createBusinessDto: CreateBusinessDto) {
-    const newBusiness = await this.businessService.create(createBusinessDto);
+  async create(
+    @Body() createBusinessDto: CreateBusinessDto,
+    @Req() { user }: IUserRequestData,
+  ) {
+    const newBusiness = await this.businessService.create(
+      createBusinessDto,
+      user.id,
+    );
+
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.CREATED)
       .setHeaders({ Location: `/business/${newBusiness.id}` })
@@ -40,7 +47,7 @@ export class BusinessController {
     return response;
   }
 
-  @Roles(Role.ADMIN, Role.PROVIDER)
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<NestResponse> {
@@ -54,6 +61,7 @@ export class BusinessController {
     return response;
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get('/my-business')
   async findMe(@Req() { user }: IUserRequestData): Promise<NestResponse> {
@@ -67,7 +75,6 @@ export class BusinessController {
   }
 
   @ApiBearerAuth()
-  @Roles(Role.ADMIN, Role.PROVIDER)
   @UseGuards(JwtAuthGuard)
   @Get(':id')
   async findOne(@Param('id') id: string): Promise<NestResponse> {
@@ -87,10 +94,12 @@ export class BusinessController {
   async update(
     @Param('id') id: string,
     @Body() updateBusinessDto: UpdateBusinessDto,
+    @Req() { user }: IUserRequestData,
   ): Promise<NestResponse> {
     const updatedBusiness = await this.businessService.update(
       id,
       updateBusinessDto,
+      user.id,
     );
 
     const response = new NestResponseBuilder()
@@ -102,8 +111,10 @@ export class BusinessController {
     return response;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.businessService.remove(id);
+  remove(@Param('id') id: string, @Req() { user }: IUserRequestData) {
+    return this.businessService.remove(id, user.id);
   }
 }

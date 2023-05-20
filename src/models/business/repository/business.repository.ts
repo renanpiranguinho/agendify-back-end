@@ -77,7 +77,7 @@ export class BusinessRepository implements IBusinessRepository {
       telephone,
     }: UpdateBusinessDto,
   ): Promise<Business> {
-    const updatedBusiness= await this.prismaService.business.update({
+    const updatedBusiness = await this.prismaService.business.update({
       where: { id },
       data: {
         name,
