@@ -18,15 +18,17 @@ export class BusinessService {
     private readonly usersRepository: UsersRepository,
     private readonly prismaService: PrismaService,
   ) {}
-  async create({
-    address,
-    category_id,
-    description,
-    image_url,
-    name,
-    owner_id,
-    telephone,
-  }: CreateBusinessDto) {
+  async create(
+    {
+      address,
+      category_id,
+      description,
+      image_url,
+      name,
+      telephone,
+    }: CreateBusinessDto,
+    owner_id: string,
+  ) {
     //###############################
     // Create address
     const newAddress = address;
@@ -64,7 +66,7 @@ export class BusinessService {
       address: newAddress,
       image_url,
       category_id,
-      owner_id,
+      owner_id: owner_id,
       telephone,
     });
 
@@ -118,9 +120,9 @@ export class BusinessService {
       description,
       image_url,
       name,
-      owner_id,
       telephone,
     }: UpdateBusinessDto,
+    owner_id: string,
   ): Promise<Business> {
     const business = await this.businessRepository.findById(id);
 
@@ -128,6 +130,30 @@ export class BusinessService {
       throw new NotFoundException({
         statusCode: HttpStatus.NOT_FOUND,
         message: 'Business not found',
+      });
+    }
+
+    const ownerExists = await this.usersRepository.findById(owner_id);
+
+    if (!ownerExists) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business Owner is not found',
+      });
+    }
+
+    const userBusiness: Business[] = await this.businessRepository.findByOwner(
+      owner_id,
+    );
+
+    const belongUser = userBusiness.some(
+      (usrBusiness) => usrBusiness.id == business.id,
+    );
+
+    if (!belongUser) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business not belong user',
       });
     }
 
@@ -148,29 +174,54 @@ export class BusinessService {
       description,
       image_url,
       name,
-      owner_id,
       telephone,
     });
 
     return new Business(updatedBusiness);
   }
 
-  async remove(id: string) {
-    try {
-      const businessDeleted = await this.businessRepository.softDelete(id);
+  async remove(id: string, owner_id: string) {
+    const business = await this.businessRepository.findById(id);
 
-      if (!businessDeleted)
-        throw new NotFoundException({
-          statusCode: HttpStatus.NOT_FOUND,
-          message: 'Business not found',
-        });
+    if (!business) {
+      throw new NotFoundException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Business not found',
+      });
+    }
 
-      return new Business(businessDeleted);
-    } catch (error) {
+    const ownerExists = await this.usersRepository.findById(owner_id);
+
+    if (!ownerExists) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business Owner is not found',
+      });
+    }
+
+    const userBusiness: Business[] = await this.businessRepository.findByOwner(
+      owner_id,
+    );
+
+    const belongUser = userBusiness.some(
+      (usrBusiness) => usrBusiness.id == business.id,
+    );
+
+    if (!belongUser) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business not belong user',
+      });
+    }
+
+    const businessDeleted = await this.businessRepository.softDelete(id);
+
+    if (!businessDeleted)
       throw new BadRequestException({
         statusCode: HttpStatus.BAD_REQUEST,
         message: 'Business not deleted',
       });
-    }
+
+    return new Business(businessDeleted);
   }
 }
