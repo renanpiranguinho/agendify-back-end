@@ -7,7 +7,7 @@ export interface IBusinessRepository {
   findById(id: string): Promise<Business>;
   findByTel(telephone: string): Promise<Business>;
   findByOwner(owner_id: string): Promise<Business[]>;
-  findAll(): Promise<Business[]>;
+  findAll(businessName?: string, categoryId?: string): Promise<Business[]>;
   updateById(
     id: string,
     updateBusinessDto: UpdateBusinessDto,

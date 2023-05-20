@@ -81,8 +81,14 @@ export class BusinessService {
     return new Business(newBusiness);
   }
 
-  async findAll(): Promise<Business[]> {
-    const allBusiness = await this.businessRepository.findAll();
+  async findAll(
+    businessName?: string,
+    categoryId?: string,
+  ): Promise<Business[]> {
+    const allBusiness = await this.businessRepository.findAll(
+      businessName,
+      categoryId,
+    );
 
     return allBusiness.map((business) => new Business(business));
   }
