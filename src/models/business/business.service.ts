@@ -10,6 +10,7 @@ import { BusinessRepository } from './repository/business.repository';
 import { Business } from './entities/business.entity';
 import { PrismaService } from 'prisma/prisma.service';
 import { UsersRepository } from '../users/repository/user.repository';
+import { Role } from '../users/enums/role.enum';
 
 @Injectable()
 export class BusinessService {
@@ -69,6 +70,13 @@ export class BusinessService {
       owner_id: owner_id,
       telephone,
     });
+
+    if (owner.role === Role.USER) {
+      await this.prismaService.user.update({
+        where: { id: owner_id },
+        data: { role: Role.PROVIDER },
+      });
+    }
 
     return new Business(newBusiness);
   }
