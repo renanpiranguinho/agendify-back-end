@@ -7,8 +7,8 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { JwtService } from '@nestjs/jwt';
-import { ROLES_KEY } from 'src/decorators/roles.decorator';
-import { Role } from 'src/models/users/enums/role.enum';
+import { ROLES_KEY } from '../decorators/roles.decorator';
+import { Role } from '../models/users/enums/role.enum';
 
 interface ITokenPayload {
   role: Role;

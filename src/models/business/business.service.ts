@@ -8,7 +8,7 @@ import { CreateBusinessDto } from './dto/create-business.dto';
 import { UpdateBusinessDto } from './dto/update-business.dto';
 import { BusinessRepository } from './repository/business.repository';
 import { Business } from './entities/business.entity';
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '../../../prisma/prisma.service';
 import { UsersRepository } from '../users/repository/user.repository';
 import { Role } from '../users/enums/role.enum';
 

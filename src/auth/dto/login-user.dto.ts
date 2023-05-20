@@ -1,4 +1,4 @@
-import { Role } from 'src/models/users/enums/role.enum';
+import { Role } from '../../models/users/enums/role.enum';
 
 export class LoginUserDto {
   id: string;
