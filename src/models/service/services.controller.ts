@@ -9,6 +9,8 @@ import {
   HttpStatus,
   UseGuards,
   Req,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
@@ -18,23 +20,38 @@ import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { NestResponse } from '../../core/http/nestResponse';
 import { IUserRequestData } from 'src/auth/auth.controller';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
 
 @ApiTags('Services')
 @Controller('services')
 export class ServicesController {
   constructor(private readonly serviceService: ServicesService) {}
 
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './src/uploads/services',
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
+    @UploadedFile() image,
     @Body() createServiceDto: CreateServiceDto,
     @Req() { user }: IUserRequestData,
   ) {
+    if (image) createServiceDto.image_url = image.path;
     const newService = await this.serviceService.create(
       createServiceDto,
       user.id,
     );
+
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.CREATED)
       .setHeaders({ Location: `/business/${newService.id}` })
@@ -104,6 +121,37 @@ export class ServicesController {
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)
       .setBody(deletedService)
+      .build();
+
+    return response;
+  }
+
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './src/uploads/services',
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('/setImage/:id')
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() image,
+    @Req() { user }: IUserRequestData,
+  ): Promise<NestResponse> {
+    await this.serviceService.update(id, { image_url: image.path }, user.id);
+
+    const response = new NestResponseBuilder()
+      .setStatus(HttpStatus.OK)
+      .setBody({
+        originalname: image.originalname,
+        filename: image.filename,
+        destination: image.path,
+      })
       .build();
 
     return response;

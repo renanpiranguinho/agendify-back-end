@@ -10,6 +10,8 @@ import {
   UseGuards,
   Req,
   Query,
+  UseInterceptors,
+  UploadedFile,
 } from '@nestjs/common';
 import { BusinessService } from './business.service';
 import { CreateBusinessDto } from './dto/create-business.dto';
@@ -20,6 +22,9 @@ import { RolesGuard } from '../../guards/roles.guard';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { NestResponse } from '../../core/http/nestResponse';
 import { IUserRequestData } from '../../auth/auth.controller';
+import { FileInterceptor } from '@nestjs/platform-express';
+import { diskStorage } from 'multer';
+import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
 
 @ApiTags('Business')
 @UseGuards(RolesGuard)
@@ -27,13 +32,24 @@ import { IUserRequestData } from '../../auth/auth.controller';
 export class BusinessController {
   constructor(private readonly businessService: BusinessService) {}
 
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './src/uploads/business',
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
+    @UploadedFile() image,
     @Body() createBusinessDto: CreateBusinessDto,
     @Req() { user }: IUserRequestData,
   ) {
+    if (image) createBusinessDto.image_url = image.path;
     const newBusiness = await this.businessService.create(
       createBusinessDto,
       user.id,
@@ -122,5 +138,40 @@ export class BusinessController {
   @Delete(':id')
   remove(@Param('id') id: string, @Req() { user }: IUserRequestData) {
     return this.businessService.remove(id, user.id);
+  }
+
+  @UseInterceptors(
+    FileInterceptor('image', {
+      storage: diskStorage({
+        destination: './src/uploads/business',
+        filename: editFileName,
+      }),
+      fileFilter: imageFileFilter,
+    }),
+  )
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
+  @Post('/setImage/:id')
+  async uploadImage(
+    @Param('id') id: string,
+    @UploadedFile() image,
+    @Req() { user }: IUserRequestData,
+  ): Promise<NestResponse> {
+    await this.businessService.update(
+      id,
+      { image_url: image.path },
+      user.id,
+    );
+
+    const response = new NestResponseBuilder()
+      .setStatus(HttpStatus.OK)
+      .setBody({
+        originalname: image.originalname,
+        filename: image.filename,
+        destination: image.path,
+      })
+      .build();
+
+    return response;
   }
 }

@@ -38,6 +38,7 @@
     "@nestjs/schedule": "^2.1.0",
     "@nestjs/swagger": "^6.3.0",
     "@prisma/client": "^3.15.2",
+    "@types/multer": "^1.4.7",
     "bcryptjs": "^2.4.3",
     "bull": "^4.10.1",
     "class-transformer": "^0.5.1",

@@ -62,6 +62,8 @@ export class ServicesService {
       });
     }
 
+    if (price) price = parseFloat(price.toString());
+
     const newBusiness = await this.serviceRepository.create({
       name,
       description,

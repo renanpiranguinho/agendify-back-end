@@ -159,7 +159,7 @@ export class BusinessService {
     const userBusiness: Business[] = await this.businessRepository.findByOwner(
       owner_id,
     );
-
+    
     const belongUser = userBusiness.some(
       (usrBusiness) => usrBusiness.id == business.id,
     );
@@ -167,10 +167,10 @@ export class BusinessService {
     if (!belongUser) {
       throw new BadRequestException({
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Business not belong user',
+        message: 'Business does not belong to user',
       });
     }
-
+    
     const category = this.prismaService.category.findFirst({
       where: { id: category_id },
     });
@@ -178,7 +178,7 @@ export class BusinessService {
     if (!category) {
       throw new NotFoundException({
         statusCode: HttpStatus.NOT_FOUND,
-        message: 'Category not found',
+        message: 'Category is not found',
       });
     }
 
@@ -200,7 +200,7 @@ export class BusinessService {
     if (!business) {
       throw new NotFoundException({
         statusCode: HttpStatus.NOT_FOUND,
-        message: 'Business not found',
+        message: 'Business is not found',
       });
     }
 
@@ -224,7 +224,7 @@ export class BusinessService {
     if (!belongUser) {
       throw new BadRequestException({
         statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Business not belong user',
+        message: 'Business does not belong to user',
       });
     }
 
