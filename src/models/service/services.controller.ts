@@ -15,18 +15,26 @@ import { CreateServiceDto } from './dto/create-service.dto';
 import { UpdateServiceDto } from './dto/update-service.dto';
 import { NestResponseBuilder } from '../../core/http/nestResponseBuilder';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
-import { RolesGuard } from '../../guards/roles.guard';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { NestResponse } from '../../core/http/nestResponse';
+import { IUserRequestData } from 'src/auth/auth.controller';
 
 @ApiTags('Services')
 @Controller('services')
 export class ServicesController {
   constructor(private readonly serviceService: ServicesService) {}
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Post()
-  async create(@Body() createServiceDto: CreateServiceDto) {
-    const newService = await this.serviceService.create(createServiceDto);
+  async create(
+    @Body() createServiceDto: CreateServiceDto,
+    @Req() { user }: IUserRequestData,
+  ) {
+    const newService = await this.serviceService.create(
+      createServiceDto,
+      user.id,
+    );
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.CREATED)
       .setHeaders({ Location: `/business/${newService.id}` })
@@ -36,6 +44,7 @@ export class ServicesController {
     return response;
   }
 
+  @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
   async findAll(): Promise<NestResponse> {
@@ -69,10 +78,12 @@ export class ServicesController {
   async update(
     @Param('id') id: string,
     @Body() updateBusinessDto: UpdateServiceDto,
+    @Req() { user }: IUserRequestData,
   ): Promise<NestResponse> {
     const updatedBusiness = await this.serviceService.update(
       id,
       updateBusinessDto,
+      user.id,
     );
 
     const response = new NestResponseBuilder()
@@ -84,9 +95,11 @@ export class ServicesController {
     return response;
   }
 
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
-  async remove(@Param('id') id: string) {
-    const deletedService = await this.serviceService.remove(id);
+  async remove(@Param('id') id: string, @Req() { user }: IUserRequestData) {
+    const deletedService = await this.serviceService.remove(id, user.id);
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)

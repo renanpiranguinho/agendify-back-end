@@ -11,6 +11,7 @@ import { Service } from './entities/service.entity';
 import { PrismaService } from 'prisma/prisma.service';
 import { UsersRepository } from '../users/repository/user.repository';
 import { BusinessRepository } from '../business/repository/business.repository';
+import { Business } from '../business/entities/business.entity';
 
 @Injectable()
 export class ServicesService {
@@ -20,14 +21,17 @@ export class ServicesService {
     private readonly usersRepository: UsersRepository,
     private readonly prismaService: PrismaService,
   ) {}
-  async create({
-    name,
-    description,
-    image_url,
-    business_id,
-    duration,
-    price,
-  }: CreateServiceDto) {
+  async create(
+    {
+      name,
+      description,
+      image_url,
+      business_id,
+      duration,
+      price,
+    }: CreateServiceDto,
+    owner_id: string,
+  ) {
     const business = await this.businessRepository.findById(business_id);
     if (!business) {
       throw new NotFoundException({
@@ -35,6 +39,31 @@ export class ServicesService {
         message: 'Business not found',
       });
     }
+
+    const ownerExists = await this.usersRepository.findById(owner_id);
+
+    if (!ownerExists) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business Owner is not found',
+      });
+    }
+
+    const userBusiness: Business[] = await this.businessRepository.findByOwner(
+      owner_id,
+    );
+
+    const belongUser = userBusiness.some(
+      (usrBusiness) => usrBusiness.id == business.id,
+    );
+
+    if (!belongUser) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business not belong user',
+      });
+    }
+
     const newBusiness = await this.serviceRepository.create({
       name,
       description,
@@ -76,6 +105,7 @@ export class ServicesService {
       duration,
       price,
     }: UpdateServiceDto,
+    owner_id: string,
   ): Promise<Service> {
     const service = await this.serviceRepository.findById(id);
 
@@ -87,7 +117,7 @@ export class ServicesService {
     }
 
     if (business_id) {
-      const business = await this.businessRepository.findById(id);
+      const business = await this.businessRepository.findById(business_id);
 
       if (!business) {
         throw new NotFoundException({
@@ -95,6 +125,32 @@ export class ServicesService {
           message: 'Business not found',
         });
       }
+    }
+
+    const ownerExists = await this.usersRepository.findById(owner_id);
+
+    if (!ownerExists) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business Owner is not found',
+      });
+    }
+
+    const serviceBusinessId = service.business_id;
+
+    const userBusiness: Business[] = await this.businessRepository.findByOwner(
+      owner_id,
+    );
+
+    const belongUser = userBusiness.some(
+      (usrBusiness) => usrBusiness.id == serviceBusinessId,
+    );
+
+    if (!belongUser) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business not belong user',
+      });
     }
 
     const updatedService = await this.serviceRepository.updateById(id, {
@@ -109,24 +165,50 @@ export class ServicesService {
     return new Service(updatedService);
   }
 
-  async remove(id: string) {
-    try {
-      const serviceFound = await this.serviceRepository.findById(id);
+  async remove(id: string, owner_id: string) {
+    const serviceFound = await this.serviceRepository.findById(id);
 
-      if (!serviceFound)
-        throw new NotFoundException({
-          statusCode: HttpStatus.NOT_FOUND,
-          message: 'Service not found',
-        });
+    if (!serviceFound)
+      throw new NotFoundException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Service not found',
+      });
 
-      const serviceDeleted = await this.serviceRepository.delete(id);
-      return new Service(serviceDeleted);
-    } catch (error) {
+    const ownerExists = await this.usersRepository.findById(owner_id);
+
+    if (!ownerExists) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business Owner is not found',
+      });
+    }
+
+    const serviceBusinessId = serviceFound.business_id;
+
+    const userBusiness: Business[] = await this.businessRepository.findByOwner(
+      owner_id,
+    );
+
+    const belongUser = userBusiness.some(
+      (usrBusiness) => usrBusiness.id == serviceBusinessId,
+    );
+
+    if (!belongUser) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business not belong user',
+      });
+    }
+
+    const serviceDeleted = await this.serviceRepository.delete(id);
+
+    if (!serviceDeleted) {
       throw new BadRequestException({
         statusCode: HttpStatus.BAD_REQUEST,
         message: 'Service not deleted',
-        error: error,
       });
     }
+
+    return new Service(serviceDeleted);
   }
 }
