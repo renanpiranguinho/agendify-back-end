@@ -99,6 +99,20 @@ export class ServicesController {
 
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
+  @Get('/get-by-business/:id')
+  async findByBusiness(@Param('id') id: string): Promise<NestResponse> {
+    const allServices = await this.serviceService.findByBusiness(id);
+
+    const response = new NestResponseBuilder()
+      .setStatus(HttpStatus.OK)
+      .setBody(allServices)
+      .build();
+
+    return response;
+  }
+
+  @ApiBearerAuth()
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,

@@ -95,6 +95,27 @@ export class ServicesService {
     return new Service(service);
   }
 
+  async findByBusiness(business_id: string): Promise<Service[]> {
+    const business = await this.businessRepository.findById(business_id);
+    if (!business) {
+      throw new NotFoundException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Business not found',
+      });
+    }
+
+    const allServices = await this.serviceRepository.findByBusiness(business_id);
+
+    if (allServices.length == 0) {
+      throw new NotFoundException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Services not found',
+      });
+    }
+
+    return allServices.map((service) => new Service(service));
+  }
+
   async update(
     id: string,
     {
