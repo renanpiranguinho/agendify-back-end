@@ -12,6 +12,7 @@ import {
   Query,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { BusinessService } from './business.service';
 import { CreateBusinessDto } from './dto/create-business.dto';
@@ -32,6 +33,11 @@ import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
 export class BusinessController {
   constructor(private readonly businessService: BusinessService) {}
 
+  @Get(':imgpath')
+  seeUploadedFile(@Param('imgpath') image, @Res() res) {
+    return res.sendFile(image, { root: './src/uploads/business' });
+  }
+
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -49,7 +55,7 @@ export class BusinessController {
     @Body() createBusinessDto: CreateBusinessDto,
     @Req() { user }: IUserRequestData,
   ) {
-    if (image) createBusinessDto.image_url = image.path;
+    if (image) createBusinessDto.image_url = 'business/' + image.filename;;
     const newBusiness = await this.businessService.create(
       createBusinessDto,
       user.id,
@@ -63,7 +69,7 @@ export class BusinessController {
 
     return response;
   }
-
+  
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
@@ -157,18 +163,15 @@ export class BusinessController {
     @UploadedFile() image,
     @Req() { user }: IUserRequestData,
   ): Promise<NestResponse> {
-    await this.businessService.update(
-      id,
-      { image_url: image.path },
-      user.id,
-    );
+    const image_url = 'business/' + image.filename;
+    await this.businessService.update(id, { image_url }, user.id);
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)
       .setBody({
         originalname: image.originalname,
         filename: image.filename,
-        destination: image.path,
+        destination: image_url,
       })
       .build();
 

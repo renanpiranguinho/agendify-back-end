@@ -11,6 +11,7 @@ import {
   Req,
   UseInterceptors,
   UploadedFile,
+  Res,
 } from '@nestjs/common';
 import { ServicesService } from './services.service';
 import { CreateServiceDto } from './dto/create-service.dto';
@@ -29,6 +30,11 @@ import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
 export class ServicesController {
   constructor(private readonly serviceService: ServicesService) {}
 
+  @Get(':imgpath')
+  seeUploadedFile(@Param('imgpath') image, @Res() res) {
+    return res.sendFile(image, { root: './src/uploads/services' });
+  }
+
   @UseInterceptors(
     FileInterceptor('image', {
       storage: diskStorage({
@@ -46,7 +52,9 @@ export class ServicesController {
     @Body() createServiceDto: CreateServiceDto,
     @Req() { user }: IUserRequestData,
   ) {
-    if (image) createServiceDto.image_url = image.path;
+    if (image) 
+      createServiceDto.image_url = 'services/' + image.filename;
+      
     const newService = await this.serviceService.create(
       createServiceDto,
       user.id,
@@ -143,14 +151,15 @@ export class ServicesController {
     @UploadedFile() image,
     @Req() { user }: IUserRequestData,
   ): Promise<NestResponse> {
-    await this.serviceService.update(id, { image_url: image.path }, user.id);
+    const image_url = 'services/' + image.filename;
+    await this.serviceService.update(id, { image_url }, user.id);
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)
       .setBody({
         originalname: image.originalname,
         filename: image.filename,
-        destination: image.path,
+        destination: image_url,
       })
       .build();
 
