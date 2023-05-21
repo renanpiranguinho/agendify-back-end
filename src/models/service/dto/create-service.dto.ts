@@ -1,4 +1,10 @@
-import { IsEmpty, IsNotEmpty, IsNumber, IsNumberString, IsOptional, IsString } from 'class-validator';
+import {
+  IsEmpty,
+  IsNotEmpty,
+  IsNumberString,
+  IsOptional,
+  IsString,
+} from 'class-validator';
 
 export class CreateServiceDto {
   @IsNotEmpty({

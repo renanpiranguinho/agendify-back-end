@@ -33,7 +33,9 @@ export class BusinessService {
     //###############################
     // Create address
     //const newAddress = address;
-    const newAddress = await this.prismaService.address.create({ data: address });
+    const newAddress = await this.prismaService.address.create({
+      data: address,
+    });
     //###############################
 
     const category = this.prismaService.category.findFirst({

@@ -52,9 +52,8 @@ export class ServicesController {
     @Body() createServiceDto: CreateServiceDto,
     @Req() { user }: IUserRequestData,
   ) {
-    if (image) 
-      createServiceDto.image_url = 'services/img/' + image.filename;
-      
+    if (image) createServiceDto.image_url = 'services/img/' + image.filename;
+
     const newService = await this.serviceService.create(
       createServiceDto,
       user.id,

@@ -1,5 +1,8 @@
 import { HttpStatus } from '@nestjs/common';
-import { mockCreateUserReturnService } from '../../models/users/tests/mocks';
+import {
+  mockCreateUserReturnService,
+  mockedUserId,
+} from '../../models/users/tests/mocks';
 import { NestResponseBuilder } from '../../core/http/nestResponseBuilder';
 import { Role } from '../../models/users/enums/role.enum';
 
@@ -35,7 +38,7 @@ export const mockAuthenticateInput = {
 };
 
 export const mockLoginInput = {
-  id: 'f7368e17-cea9-4787-8577-ad24619532b5',
+  id: mockedUserId,
   name: 'test',
   email: 'test@test.com',
   is_active: false,
@@ -48,7 +51,7 @@ export const mockLoginReturn = {
 
 export const mockUser = {
   user: {
-    id: 'f7368e17-cea9-4787-8577-ad24619532b5',
+    id: mockedUserId,
     name: 'test',
     email: 'test@test.com',
     role: Role.USER,
