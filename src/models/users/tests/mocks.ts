@@ -5,6 +5,8 @@ import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
 
+export const mockedUserId = 'f7368e17-cea9-4787-8577-ad24619532b5';
+
 export const mockCreateUserInput: CreateUserDto = {
   name: 'test',
   email: 'test@test.com',
@@ -12,7 +14,7 @@ export const mockCreateUserInput: CreateUserDto = {
 };
 
 export const mockCreateUserReturnService: User = {
-  id: 'f7368e17-cea9-4787-8577-ad24619532b5',
+  id: mockedUserId,
   email: 'test@test.com',
   name: 'test',
   password: '123456',

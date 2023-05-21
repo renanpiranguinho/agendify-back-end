@@ -25,13 +25,13 @@ describe('UsersService', () => {
           provide: UsersRepository,
           useValue: {
             create: jest.fn().mockReturnValue(mockCreateUserReturnService),
+            findById: jest.fn().mockReturnValue(mockCreateUserReturnService),
             findByEmail: jest.fn().mockReturnValue(mockCreateUserReturnService),
             findAll: jest.fn().mockReturnValue([mockCreateUserReturnService]),
+            updateById: jest.fn().mockReturnValue(mockUpdateUserReturnService),
             updateByEmail: jest
               .fn()
               .mockReturnValue(mockUpdateUserReturnService),
-            findById: jest.fn().mockReturnValue(mockCreateUserReturnService),
-            updateById: jest.fn().mockReturnValue(mockUpdateUserReturnService),
             softDelete: jest.fn().mockReturnValue(mockRemoveUserReturnService),
           },
         },
