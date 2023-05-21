@@ -32,7 +32,8 @@ export class BusinessService {
   ) {
     //###############################
     // Create address
-    const newAddress = address;
+    //const newAddress = address;
+    const newAddress = await this.prismaService.address.create({ data: address });
     //###############################
 
     const category = this.prismaService.category.findFirst({
@@ -159,7 +160,7 @@ export class BusinessService {
     const userBusiness: Business[] = await this.businessRepository.findByOwner(
       owner_id,
     );
-    
+
     const belongUser = userBusiness.some(
       (usrBusiness) => usrBusiness.id == business.id,
     );
@@ -170,7 +171,7 @@ export class BusinessService {
         message: 'Business does not belong to user',
       });
     }
-    
+
     const category = this.prismaService.category.findFirst({
       where: { id: category_id },
     });

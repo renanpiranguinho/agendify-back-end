@@ -67,6 +67,7 @@ export class BusinessRepository implements IBusinessRepository {
   async findById(id: string): Promise<Business> {
     const businessFound = await this.prismaService.business.findFirst({
       where: { id, is_operating: true },
+      include: { address: true },
     });
 
     return businessFound;
@@ -106,7 +107,7 @@ export class BusinessRepository implements IBusinessRepository {
         name,
         is_operating: true,
         description,
-        address_id: address ? address.id :null,
+        address_id: address ? address.id : null,
         category_id,
         image_url,
         owner_id,
