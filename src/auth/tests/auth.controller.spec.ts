@@ -1,5 +1,4 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { mockUser } from '../../models/ratings/tests/mocks';
 import { AuthController } from '../auth.controller';
 import { AuthService } from '../auth.service';
 import {
@@ -7,6 +6,7 @@ import {
   mockReceivedConfirmationAccountMailReturnController,
   mockReceivedConfirmationAccountMailReturnService,
   mockToken,
+  mockUser,
 } from './mocks';
 
 describe('AuthController', () => {

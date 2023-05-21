@@ -19,9 +19,9 @@ import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { UserPipe } from './user.pipe';
 import { IUserRequestData } from '../../auth/auth.controller';
-import { Roles } from 'src/decorators/roles.decorator';
+import { Roles } from '../../decorators/roles.decorator';
 import { Role } from './enums/role.enum';
-import { RolesGuard } from 'src/guards/roles.guard';
+import { RolesGuard } from '../../guards/roles.guard';
 import { SetRoleDto } from './dto/set-role-dto';
 
 @ApiTags('Users')

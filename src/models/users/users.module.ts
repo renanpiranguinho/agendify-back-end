@@ -7,9 +7,9 @@ import { EncryptData } from '../../utils/encrypt-data';
 import { UserPipe } from './user.pipe';
 import { BullModule } from '@nestjs/bull';
 import { UsersRepository } from './repository/user.repository';
-import { GenerateToken } from 'src/providers/generate-token';
-import { AuthService } from 'src/auth/auth.service';
-import { SendMailService } from 'src/mail/send-mail.service';
+import { GenerateToken } from '../../providers/generate-token';
+import { AuthService } from '../../auth/auth.service';
+import { SendMailService } from '../../mail/send-mail.service';
 
 @Module({
   imports: [

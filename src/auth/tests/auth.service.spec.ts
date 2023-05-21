@@ -8,13 +8,10 @@ import {
   mockAuthenticateInput,
   mockLoginInput,
   mockLoginReturn,
-  mockRefreshToken,
   mockToken,
 } from './mocks';
 import { GenerateToken } from '../../providers/generate-token';
 import { UsersRepository } from '../../models/users/repository/user.repository';
-import { GenerateRefreshToken } from '../../providers/generate-refresh-token';
-import { RefreshTokenRepository } from '../repository/refresh-token-repository';
 
 describe('AuthService', () => {
   let authService: AuthService;
@@ -22,7 +19,6 @@ describe('AuthService', () => {
   let sendMailService: SendMailService;
   let encryptData: EncryptData;
   let usersRepository: UsersRepository;
-  let refreshTokenRepository: RefreshTokenRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -50,25 +46,13 @@ describe('AuthService', () => {
             generate: jest.fn().mockReturnValue(mockToken),
           },
         },
-        {
-          provide: GenerateRefreshToken,
-          useValue: {
-            generate: jest.fn().mockReturnValue(mockRefreshToken),
-          },
-        },
+
         {
           provide: UsersRepository,
           useValue: {
             findByEmail: jest.fn().mockReturnValue(mockCreateUserReturnService),
             findById: jest.fn().mockReturnValue(mockCreateUserReturnService),
             updateById: jest.fn().mockReturnValue(mockCreateUserReturnService),
-          },
-        },
-        {
-          provide: RefreshTokenRepository,
-          useValue: {
-            deleteByEmail: jest.fn().mockReturnValue(mockRefreshToken),
-            findById: jest.fn().mockReturnValue(mockRefreshToken),
           },
         },
       ],
@@ -79,9 +63,6 @@ describe('AuthService', () => {
     sendMailService = module.get<SendMailService>(SendMailService);
     encryptData = module.get<EncryptData>(EncryptData);
     usersRepository = module.get<UsersRepository>(UsersRepository);
-    refreshTokenRepository = module.get<RefreshTokenRepository>(
-      RefreshTokenRepository,
-    );
   });
 
   it('should be defined', () => {
@@ -90,7 +71,6 @@ describe('AuthService', () => {
     expect(sendMailService).toBeDefined();
     expect(encryptData).toBeDefined();
     expect(usersRepository).toBeDefined();
-    expect(refreshTokenRepository).toBeDefined();
   });
 
   describe('Authenticate', () => {

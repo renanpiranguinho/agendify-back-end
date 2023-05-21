@@ -13,7 +13,7 @@ import { AuthService } from './auth.service';
 import { LocalAuthGuard } from '../guards/local.guard';
 import { ApiTags } from '@nestjs/swagger';
 import { ActiveGuard } from '../guards/active.guard';
-import { Role } from 'src/models/users/enums/role.enum';
+import { Role } from '../models/users/enums/role.enum';
 
 export interface IUserRequestData {
   user: {

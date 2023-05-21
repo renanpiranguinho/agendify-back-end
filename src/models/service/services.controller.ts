@@ -20,10 +20,10 @@ import { NestResponseBuilder } from '../../core/http/nestResponseBuilder';
 import { ApiBearerAuth, ApiTags } from '@nestjs/swagger';
 import { JwtAuthGuard } from '../../guards/jwt.guard';
 import { NestResponse } from '../../core/http/nestResponse';
-import { IUserRequestData } from 'src/auth/auth.controller';
+import { IUserRequestData } from '../../auth/auth.controller';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
+import { editFileName, imageFileFilter } from '../../utils/file-upload.utils';
 
 @ApiTags('Services')
 @Controller('services')
@@ -52,9 +52,8 @@ export class ServicesController {
     @Body() createServiceDto: CreateServiceDto,
     @Req() { user }: IUserRequestData,
   ) {
-    if (image) 
-      createServiceDto.image_url = 'services/img/' + image.filename;
-      
+    if (image) createServiceDto.image_url = 'services/img/' + image.filename;
+
     const newService = await this.serviceService.create(
       createServiceDto,
       user.id,

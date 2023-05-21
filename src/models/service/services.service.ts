@@ -104,7 +104,9 @@ export class ServicesService {
       });
     }
 
-    const allServices = await this.serviceRepository.findByBusiness(business_id);
+    const allServices = await this.serviceRepository.findByBusiness(
+      business_id,
+    );
 
     if (allServices.length == 0) {
       throw new NotFoundException({
