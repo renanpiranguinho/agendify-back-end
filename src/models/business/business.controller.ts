@@ -25,7 +25,7 @@ import { NestResponse } from '../../core/http/nestResponse';
 import { IUserRequestData } from '../../auth/auth.controller';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { diskStorage } from 'multer';
-import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
+import { editFileName, imageFileFilter } from '../../utils/file-upload.utils';
 
 @ApiTags('Business')
 @UseGuards(RolesGuard)
@@ -55,7 +55,7 @@ export class BusinessController {
     @Body() createBusinessDto: CreateBusinessDto,
     @Req() { user }: IUserRequestData,
   ) {
-    if (image) createBusinessDto.image_url = 'business/img/' + image.filename;;
+    if (image) createBusinessDto.image_url = 'business/img/' + image.filename;
     const newBusiness = await this.businessService.create(
       createBusinessDto,
       user.id,
@@ -69,7 +69,7 @@ export class BusinessController {
 
     return response;
   }
-  
+
   @ApiBearerAuth()
   @UseGuards(JwtAuthGuard)
   @Get()
