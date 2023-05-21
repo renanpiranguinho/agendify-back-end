@@ -47,7 +47,7 @@ describe('UsersService', () => {
             encrypt: jest
               .fn()
               .mockReturnValue(mockCreateUserReturnService.password),
-            decrypt: jest.fn().mockReturnValue(true),
+            decrypt: jest.fn().mockReturnValue('123456'),
           },
         },
       ],

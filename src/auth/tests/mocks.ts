@@ -10,8 +10,13 @@ export const mockLoginReturnController = new NestResponseBuilder()
   .setBody(mockToken)
   .build();
 
+const mockCreateUserReturnServiceActive = {
+  ...mockCreateUserReturnService,
+  is_active: true,
+};
+
 export const mockReceivedConfirmationAccountMailReturnService = {
-  user: mockCreateUserReturnService,
+  user: mockCreateUserReturnServiceActive,
   message: 'Email has confirmed',
 };
 
@@ -31,10 +36,10 @@ export const mockAuthenticateInput = {
 
 export const mockLoginInput = {
   id: 'f7368e17-cea9-4787-8577-ad24619532b5',
-  username: 'test',
+  name: 'test',
   email: 'test@test.com',
   is_active: false,
-  role: Role.ADMIN,
+  role: Role.USER,
 };
 
 export const mockLoginReturn = {
@@ -44,9 +49,9 @@ export const mockLoginReturn = {
 export const mockUser = {
   user: {
     id: 'f7368e17-cea9-4787-8577-ad24619532b5',
-    username: 'test',
+    name: 'test',
     email: 'test@test.com',
-    role: Role.ADMIN,
+    role: Role.USER,
     is_active: true,
   },
 };
