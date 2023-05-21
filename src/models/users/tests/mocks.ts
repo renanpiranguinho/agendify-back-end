@@ -4,6 +4,7 @@ import { Role } from '../enums/role.enum';
 import { CreateUserDto } from '../dto/create-user.dto';
 import { UpdateUserDto } from '../dto/update-user.dto';
 import { User } from '../entities/user.entity';
+import { SetRoleDto } from '../dto/set-role-dto';
 
 export const mockedUserId = 'f7368e17-cea9-4787-8577-ad24619532b5';
 
@@ -25,6 +26,15 @@ export const mockCreateUserReturnService: User = {
   deleted_at: null,
 };
 
+export const mockedUserRole: SetRoleDto = {
+  role: Role.PROVIDER,
+};
+
+export const mockSetRoleReturnService: User = {
+  ...mockCreateUserReturnService,
+  role: mockedUserRole.role,
+};
+
 export const mockCreateUserReturnController = new NestResponseBuilder()
   .setStatus(HttpStatus.CREATED)
   .setHeaders({ Location: `/users/${mockCreateUserReturnService.id}` })
@@ -39,6 +49,11 @@ export const mockFindOneUserReturnController = new NestResponseBuilder()
 export const mockFindAllUserReturnController = new NestResponseBuilder()
   .setStatus(HttpStatus.OK)
   .setBody([mockCreateUserReturnService])
+  .build();
+
+export const mockSetRoleUserReturnController = new NestResponseBuilder()
+  .setStatus(HttpStatus.OK)
+  .setBody(mockSetRoleReturnService)
   .build();
 
 export const mockUpdateUserInput: UpdateUserDto = {

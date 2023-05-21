@@ -10,11 +10,16 @@ import {
   mockFindOneUserReturnController,
   mockRemoveUserReturnController,
   mockRemoveUserReturnService,
+  mockSetRoleReturnService,
+  mockSetRoleUserReturnController,
   mockUpdateUserInput,
   mockUpdateUserReturnController,
   mockUpdateUserReturnService,
+  mockedUserId,
+  mockedUserRole,
 } from './mocks';
 import { JwtService } from '@nestjs/jwt';
+import { mockUser } from '../../../auth/tests/mocks';
 
 describe('UsersController', () => {
   let usersController: UsersController;
@@ -32,6 +37,7 @@ describe('UsersController', () => {
             findAll: jest.fn().mockReturnValue([mockCreateUserReturnService]),
             update: jest.fn().mockReturnValue(mockUpdateUserReturnService),
             remove: jest.fn().mockReturnValue(mockRemoveUserReturnService),
+            setRole: jest.fn().mockReturnValue(mockSetRoleReturnService),
           },
         },
         {
@@ -135,6 +141,39 @@ describe('UsersController', () => {
       jest.spyOn(usersService, 'remove').mockRejectedValueOnce(new Error());
 
       expect(usersController.remove('ugevfkhbwek')).rejects.toThrowError();
+    });
+  });
+
+  describe('Find me', () => {
+    it('should be find me return successfully value', async () => {
+      const response = await usersController.findMe(mockUser);
+
+      expect(response).toEqual(mockFindOneUserReturnController);
+    });
+
+    it('should be find me throw a error', async () => {
+      jest.spyOn(usersService, 'findById').mockRejectedValueOnce(new Error());
+
+      expect(usersController.findMe(mockUser)).rejects.toThrowError();
+    });
+  });
+
+  describe('Set Role', () => {
+    it('should be set role return successfully value', async () => {
+      const response = await usersController.setRole(
+        mockedUserId,
+        mockedUserRole,
+      );
+
+      expect(response).toEqual(mockSetRoleUserReturnController);
+    });
+
+    it('should be set role throw a error', async () => {
+      jest.spyOn(usersService, 'setRole').mockRejectedValueOnce(new Error());
+
+      expect(
+        usersController.setRole(mockedUserId, mockedUserRole),
+      ).rejects.toThrowError();
     });
   });
 });

@@ -4,6 +4,8 @@ import { User } from '../../../models/users/entities/user.entity';
 import { UpdateBusinessDto } from '../dto/update-business.dto';
 import { Role } from '../../../models/users/enums/role.enum';
 import { mockedUserId } from '../../../models/users/tests/mocks';
+import { NestResponseBuilder } from '../../../core/http/nestResponseBuilder';
+import { HttpStatus } from '@nestjs/common';
 
 export const mockedBusinessId = '307171f1-7eef-449c-808c-a70f54b96139';
 export const mockedAddressId = '7e875398-bd2a-4dd1-836c-0f83e038cf80';
@@ -24,7 +26,7 @@ export const mockCreateBusinessInput: CreateBusinessDto = {
   image_url: 'mocked-image-url',
   telephone: '1234567890',
   owner_id: mockedUserId,
-  category_id: 'mocked-category-id',
+  category_id: mockedCategoryId,
 };
 
 export const mockCreateBusinessReturnService: Business = {
@@ -49,7 +51,7 @@ export const mockUpdateBusinessInput: UpdateBusinessDto = {
 
 export const mockUpdateBusinessReturnService: Business = {
   ...mockCreateBusinessReturnService,
-  name: 'Mocked Business Updated',
+  ...mockUpdateBusinessInput,
 };
 
 export const mockRemoveBusinessReturnService: Business = {
@@ -75,3 +77,42 @@ export const mockCategory = {
   created_at: new Date(),
   updated_at: new Date(),
 };
+
+export const mockCreateBusinessReturnController = new NestResponseBuilder()
+  .setStatus(HttpStatus.CREATED)
+  .setHeaders({
+    Location: `/business/${mockedBusinessId}`,
+  })
+  .setBody(mockCreateBusinessReturnService)
+  .build();
+
+export const mockFindAllBusinessReturnController = new NestResponseBuilder()
+  .setStatus(HttpStatus.OK)
+  .setBody([mockCreateBusinessReturnService])
+  .build();
+
+export const mockFindOneBusinessReturnController = new NestResponseBuilder()
+  .setStatus(HttpStatus.OK)
+  .setBody(mockCreateBusinessReturnService)
+  .build();
+
+export const mockUpdateBusinessReturnController = new NestResponseBuilder()
+  .setStatus(HttpStatus.OK)
+  .setHeaders({ Location: `/business/${mockedBusinessId}` })
+  .setBody(mockUpdateBusinessReturnService)
+  .build();
+
+export const mockImageBusiness = {
+  originalname: 'originalname',
+  filename: 'filename',
+  destination: 'business/img/filename',
+};
+
+export const mockUploadBusinessImageReturnController = new NestResponseBuilder()
+  .setStatus(HttpStatus.OK)
+  .setBody({
+    originalname: mockImageBusiness.originalname,
+    filename: mockImageBusiness.filename,
+    destination: mockImageBusiness.destination,
+  })
+  .build();
