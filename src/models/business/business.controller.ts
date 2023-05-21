@@ -33,7 +33,7 @@ import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
 export class BusinessController {
   constructor(private readonly businessService: BusinessService) {}
 
-  @Get(':imgpath')
+  @Get('/img/:imgpath')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return res.sendFile(image, { root: './src/uploads/business' });
   }
@@ -55,7 +55,7 @@ export class BusinessController {
     @Body() createBusinessDto: CreateBusinessDto,
     @Req() { user }: IUserRequestData,
   ) {
-    if (image) createBusinessDto.image_url = 'business/' + image.filename;;
+    if (image) createBusinessDto.image_url = 'business/img/' + image.filename;;
     const newBusiness = await this.businessService.create(
       createBusinessDto,
       user.id,
@@ -163,7 +163,7 @@ export class BusinessController {
     @UploadedFile() image,
     @Req() { user }: IUserRequestData,
   ): Promise<NestResponse> {
-    const image_url = 'business/' + image.filename;
+    const image_url = 'business/img/' + image.filename;
     await this.businessService.update(id, { image_url }, user.id);
 
     const response = new NestResponseBuilder()

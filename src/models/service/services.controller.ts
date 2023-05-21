@@ -30,7 +30,7 @@ import { editFileName, imageFileFilter } from 'src/utils/file-upload.utils';
 export class ServicesController {
   constructor(private readonly serviceService: ServicesService) {}
 
-  @Get(':imgpath')
+  @Get('/img/:imgpath')
   seeUploadedFile(@Param('imgpath') image, @Res() res) {
     return res.sendFile(image, { root: './src/uploads/services' });
   }
@@ -53,7 +53,7 @@ export class ServicesController {
     @Req() { user }: IUserRequestData,
   ) {
     if (image) 
-      createServiceDto.image_url = 'services/' + image.filename;
+      createServiceDto.image_url = 'services/img/' + image.filename;
       
     const newService = await this.serviceService.create(
       createServiceDto,
@@ -151,7 +151,7 @@ export class ServicesController {
     @UploadedFile() image,
     @Req() { user }: IUserRequestData,
   ): Promise<NestResponse> {
-    const image_url = 'services/' + image.filename;
+    const image_url = 'services/img/' + image.filename;
     await this.serviceService.update(id, { image_url }, user.id);
 
     const response = new NestResponseBuilder()
