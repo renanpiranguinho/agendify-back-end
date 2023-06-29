@@ -6,6 +6,7 @@ import { BusinessRepository } from './repository/business.repository';
 import { JwtService } from '@nestjs/jwt';
 import { UsersRepository } from '../users/repository/user.repository';
 import { MulterModule } from '@nestjs/platform-express';
+import { AddressRepository } from '../address/repository/address.repository';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { MulterModule } from '@nestjs/platform-express';
     BusinessRepository,
     JwtService,
     UsersRepository,
+    AddressRepository,
   ],
 })
 export class BusinessModule {}
