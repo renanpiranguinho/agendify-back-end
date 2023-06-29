@@ -29,6 +29,7 @@ model User {
   Business   Business[]
   Scheduling Scheduling[]
   Rating     Rating[]
+  Address    Address[]
 }
 
 model Business {
@@ -46,7 +47,7 @@ model Business {
   category_id  String
   created_at   DateTime       @default(now())
   updated_at   DateTime       @updatedAt()
-  deleted_at   DateTime?     
+  deleted_at   DateTime?
   Service      Service[]
   Rating       Rating[]
   Availability Availability[]
@@ -63,6 +64,8 @@ model Address {
   created_at  DateTime   @default(now())
   updated_at  DateTime   @updatedAt()
   Business    Business[]
+  user        User       @relation(fields: [owner_id], references: [id])
+  owner_id    String
 }
 
 model Rating {
