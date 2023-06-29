@@ -39,9 +39,6 @@ export class CreateBusinessDto {
   })
   telephone: string;
 
-  @IsNotEmpty({
-    message: 'address is missing',
-  })
   @Transform(({ value }) => plainToClass(Address, JSON.parse(value)), {
     toClassOnly: true,
   })
