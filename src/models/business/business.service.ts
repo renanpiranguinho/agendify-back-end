@@ -252,4 +252,10 @@ export class BusinessService {
 
     return new Business(businessDeleted);
   }
+
+  async getCategories() {
+    const allCategories = await this.prismaService.category.findMany();
+
+    return allCategories;
+  }
 }
