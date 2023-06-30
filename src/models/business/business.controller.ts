@@ -177,4 +177,17 @@ export class BusinessController {
 
     return response;
   }
+
+  @UseGuards(JwtAuthGuard)
+  @Get('/get/categories')
+  async readCategorys(): Promise<NestResponse> {
+    const categories = await this.businessService.getCategories();
+
+    const response = new NestResponseBuilder()
+      .setStatus(HttpStatus.OK)
+      .setBody(categories)
+      .build();
+
+    return response;
+  }
 }
