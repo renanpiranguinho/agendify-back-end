@@ -10,10 +10,12 @@ import { SendMailModule } from './mail/send-mail.module';
 import { AuthModule } from './auth/auth.module';
 import { BusinessModule } from './models/business/business.module';
 import { ServicesModule } from './models/service/services.module';
+import { AddressModule } from './models/address/address.module';
 
 @Module({
   imports: [
     UsersModule,
+    AddressModule,
     AuthModule,
     SendMailModule,
     BusinessModule,

@@ -11,12 +11,15 @@ import { Business } from './entities/business.entity';
 import { PrismaService } from '../../../prisma/prisma.service';
 import { UsersRepository } from '../users/repository/user.repository';
 import { Role } from '../users/enums/role.enum';
+import { AddressRepository } from '../address/repository/address.repository';
+import { Address } from '../address/entities/address.entity';
 
 @Injectable()
 export class BusinessService {
   constructor(
     private readonly businessRepository: BusinessRepository,
     private readonly usersRepository: UsersRepository,
+    private readonly addressRepository: AddressRepository,
     private readonly prismaService: PrismaService,
   ) {}
   async create(
@@ -30,14 +33,18 @@ export class BusinessService {
     }: CreateBusinessDto,
     owner_id: string,
   ) {
-    //###############################
-    // Create address
-    //const newAddress = address;
-    const newAddress = await this.prismaService.address.create({
-      data: address,
-    });
-    //###############################
-
+    let newAddress: Address
+    if (address) {
+      newAddress = await this.addressRepository.create({
+        city: address.city,
+        district: address.district,
+        postal_code: address.postal_code,
+        number: address.number,
+        state: address.state,
+        street: address.street,
+        owner_id: owner_id,
+      });
+    }
     const category = this.prismaService.category.findFirst({
       where: { id: category_id },
     });
@@ -67,7 +74,7 @@ export class BusinessService {
     const newBusiness = await this.businessRepository.create({
       name,
       description,
-      address: newAddress,
+      address: address ? newAddress : null,
       image_url,
       category_id,
       owner_id: owner_id,
@@ -132,10 +139,8 @@ export class BusinessService {
   async update(
     id: string,
     {
-      address,
       category_id,
       description,
-      image_url,
       name,
       telephone,
     }: UpdateBusinessDto,
@@ -158,6 +163,14 @@ export class BusinessService {
         message: 'Business Owner is not found',
       });
     }
+
+    const oldBusiness = await this.businessRepository.findByTel(telephone);
+
+    if (oldBusiness)
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Telephone already in use',
+      });
 
     const userBusiness: Business[] = await this.businessRepository.findByOwner(
       owner_id,
@@ -186,10 +199,8 @@ export class BusinessService {
     }
 
     const updatedBusiness = await this.businessRepository.updateById(id, {
-      address,
       category_id,
       description,
-      image_url,
       name,
       telephone,
     });
