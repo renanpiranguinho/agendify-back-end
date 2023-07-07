@@ -11,6 +11,7 @@ import { AuthModule } from './auth/auth.module';
 import { BusinessModule } from './models/business/business.module';
 import { ServicesModule } from './models/service/services.module';
 import { AddressModule } from './models/address/address.module';
+import { RatingModule } from './models/rating/rating.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { AddressModule } from './models/address/address.module';
     SendMailModule,
     BusinessModule,
     ServicesModule,
+    RatingModule,
   ],
   providers: [
     PrismaService,
