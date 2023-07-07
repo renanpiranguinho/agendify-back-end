@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Availability" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "WeekDays" ALTER COLUMN "created_at" SET DEFAULT CURRENT_TIMESTAMP;
