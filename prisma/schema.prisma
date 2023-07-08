@@ -115,12 +115,12 @@ model Scheduling {
 
 model Availability {
   id          String    @id @default(uuid())
-  start_time  DateTime
-  end_time    DateTime
+  start_time  DateTime  @db.Time
+  end_time    DateTime  @db.Time
   WeekDays    WeekDays? @relation(fields: [weekdays_id], references: [id])
-  weekdays_id String?
-  created_at  DateTime
-  updated_at  DateTime
+  weekdays_id String?   
+  created_at  DateTime  @default(now())
+  updated_at  DateTime  @updatedAt()
   business_id String
   Business    Business  @relation(fields: [business_id], references: [id])
 }
@@ -128,7 +128,7 @@ model Availability {
 model WeekDays {
   id           String         @id @default(uuid())
   name         String         @db.VarChar(50)
-  created_at   DateTime
-  updated_at   DateTime
+  created_at   DateTime       @default(now())
+  updated_at   DateTime       @updatedAt()
   Availability Availability[]
 }

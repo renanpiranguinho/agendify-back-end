@@ -5,6 +5,15 @@ const prisma = new PrismaClient();
 
 async function main() {
   const encryptDate = new EncryptData();
+  const weekDays = [
+    { id: '1', day: 'Domingo' },
+    { id: '2', day: 'Segunda-feira' },
+    { id: '3', day: 'Terça-feira' },
+    { id: '4', day: 'Quarta-feira' },
+    { id: '5', day: 'Quinta-feira' },
+    { id: '6', day: 'Sexta-feira' },
+    { id: '7', day: 'Sábado' },
+  ];
   const businessCategories = [
     'Varejo',
     'Tecnologia',
@@ -38,6 +47,16 @@ async function main() {
     if (!oldCat) {
       const a = await prisma.category.create({
         data: { name: cat },
+      });
+    }
+  });
+  weekDays.forEach(async (day) => {
+    const oldDay = await prisma.weekDays.findFirst({
+      where: { name: day.day },
+    });
+    if (!oldDay) {
+      await prisma.weekDays.create({
+        data: { id: day.id, name: day.day },
       });
     }
   });
