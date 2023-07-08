@@ -9,6 +9,7 @@ import {
   HttpStatus,
   UseGuards,
   Req,
+  Query,
 } from '@nestjs/common';
 import { RatingService } from './rating.service';
 import { CreateRatingDto } from './dto/create-rating.dto';
@@ -76,8 +77,12 @@ export class RatingController {
   @Get('my-ratings')
   async findMyRatings(
     @Req() { user }: IUserRequestData,
+    @Query('businessId') businessId?: string,
   ): Promise<NestResponse> {
-    const myRatings = await this.ratingService.findMyRatings(user.id);
+    const myRatings = await this.ratingService.findMyRatings(
+      user.id,
+      businessId,
+    );
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)

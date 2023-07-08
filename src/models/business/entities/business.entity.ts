@@ -1,3 +1,5 @@
+import { IRatingInfo } from 'src/models/rating/repository/rating.repository';
+
 export class Business {
   id: string;
   name: string;
@@ -8,6 +10,7 @@ export class Business {
   address_id: string;
   owner_id: string;
   category_id: string;
+  rating?: IRatingInfo;
 
   created_at: Date;
   updated_at?: Date;

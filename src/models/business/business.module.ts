@@ -7,6 +7,7 @@ import { JwtService } from '@nestjs/jwt';
 import { UsersRepository } from '../users/repository/user.repository';
 import { MulterModule } from '@nestjs/platform-express';
 import { AddressRepository } from '../address/repository/address.repository';
+import { RatingRepository } from '../rating/repository/rating.repository';
 
 @Module({
   imports: [
@@ -22,6 +23,7 @@ import { AddressRepository } from '../address/repository/address.repository';
     JwtService,
     UsersRepository,
     AddressRepository,
+    RatingRepository,
   ],
 })
 export class BusinessModule {}
