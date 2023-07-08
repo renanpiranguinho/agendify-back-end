@@ -77,7 +77,7 @@ export class RatingController {
   @Get('my-ratings')
   async findMyRatings(
     @Req() { user }: IUserRequestData,
-    @Query() businessId?: string,
+    @Query('businessId') businessId?: string,
   ): Promise<NestResponse> {
     const myRatings = await this.ratingService.findMyRatings(
       user.id,
