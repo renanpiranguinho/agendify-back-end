@@ -4,6 +4,8 @@ import {
   IsNotEmpty,
   IsOptional,
   IsString,
+  Max,
+  Min,
 } from 'class-validator';
 
 export class CreateRatingDto {
@@ -12,6 +14,12 @@ export class CreateRatingDto {
   })
   @IsInt({
     message: 'Rating must be an integer',
+  })
+  @Min(0, {
+    message: 'Rating interval is 0-5',
+  })
+  @Max(5, {
+    message: 'Rating interval is 0-5',
   })
   rating: number;
 

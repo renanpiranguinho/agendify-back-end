@@ -5,6 +5,11 @@ import { IRatingRepository } from './i-rating.repository';
 import { UpdateRatingDto } from '../dto/update-rating.dto';
 import { Injectable } from '@nestjs/common';
 
+export interface IRatingInfo {
+  averageRating: number;
+  totalRatings: number;
+}
+
 @Injectable()
 export class RatingRepository implements IRatingRepository {
   constructor(private readonly prismaService: PrismaService) {}
@@ -31,10 +36,14 @@ export class RatingRepository implements IRatingRepository {
     return rating;
   }
 
-  async findMyRatings(userId: string): Promise<Rating[]> {
+  async findMyRatings(userId: string, businessId: string): Promise<Rating[]> {
+    const condition = businessId
+      ? { user_id: userId, business_id: businessId }
+      : { user_id: userId };
+
     const myRatings = await this.prismaService.rating.findMany({
       where: {
-        user_id: userId,
+        ...condition,
       },
     });
 
@@ -54,6 +63,27 @@ export class RatingRepository implements IRatingRepository {
     const allRatings = await this.prismaService.rating.findMany();
 
     return allRatings;
+  }
+
+  async findAverageRatingByBusiness(businessId: string): Promise<IRatingInfo> {
+    const ratingsByBusiness = await this.prismaService.rating.findMany({
+      where: {
+        business_id: businessId,
+      },
+    });
+
+    const ratings = ratingsByBusiness.map((rating) => rating.rating);
+
+    if (ratings.length === 0) return { averageRating: 0, totalRatings: 0 };
+
+    const averageRating = ratings.reduce((a, b) => a + b) / ratings.length;
+
+    const ratingInfo: IRatingInfo = {
+      averageRating: averageRating,
+      totalRatings: ratings.length,
+    };
+
+    return ratingInfo;
   }
 
   async update(

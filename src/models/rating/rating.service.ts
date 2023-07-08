@@ -24,6 +24,17 @@ export class RatingService {
       });
     }
 
+    const businessExists = await this.businessRepository.findById(
+      createRatingDto.business_id,
+    );
+
+    if (!businessExists) {
+      throw new BadRequestException({
+        message: 'Business does not exist',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
     const rating = await this.ratingRepository.create(createRatingDto, userId);
 
     if (!rating) {
@@ -49,7 +60,7 @@ export class RatingService {
     return new Rating(rating);
   }
 
-  async findMyRatings(userId: string) {
+  async findMyRatings(userId: string, businessId: string) {
     const userExists = await this.userRepository.findById(userId);
 
     if (!userExists) {
@@ -59,7 +70,10 @@ export class RatingService {
       });
     }
 
-    const myRatings = await this.ratingRepository.findMyRatings(userId);
+    const myRatings = await this.ratingRepository.findMyRatings(
+      userId,
+      businessId,
+    );
 
     return myRatings.map((rating) => new Rating(rating));
   }
@@ -85,6 +99,22 @@ export class RatingService {
     const allRatings = await this.ratingRepository.findAll();
 
     return allRatings.map((rating) => new Rating(rating));
+  }
+
+  async findAverageRatingByBusiness(businessId: string) {
+    const businessExists = await this.businessRepository.findById(businessId);
+
+    if (!businessExists) {
+      throw new BadRequestException({
+        message: 'Business does not exist',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const averageRating =
+      await this.ratingRepository.findAverageRatingByBusiness(businessId);
+
+    return averageRating;
   }
 
   async update(id: string, updateRatingDto: UpdateRatingDto) {

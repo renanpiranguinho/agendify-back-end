@@ -13,6 +13,7 @@ import { UsersRepository } from '../users/repository/user.repository';
 import { Role } from '../users/enums/role.enum';
 import { AddressRepository } from '../address/repository/address.repository';
 import { Address } from '../address/entities/address.entity';
+import { RatingRepository } from '../rating/repository/rating.repository';
 
 @Injectable()
 export class BusinessService {
@@ -21,6 +22,7 @@ export class BusinessService {
     private readonly usersRepository: UsersRepository,
     private readonly addressRepository: AddressRepository,
     private readonly prismaService: PrismaService,
+    private readonly ratingRepository: RatingRepository,
   ) {}
   async create(
     {
@@ -33,7 +35,7 @@ export class BusinessService {
     }: CreateBusinessDto,
     owner_id: string,
   ) {
-    let newAddress: Address
+    let newAddress: Address;
     if (address) {
       newAddress = await this.addressRepository.create({
         city: address.city,
@@ -100,7 +102,17 @@ export class BusinessService {
       categoryId,
     );
 
-    return allBusiness.map((business) => new Business(business));
+    const allBusinessWithRating = allBusiness.map(async (business) => {
+      const rating = await this.ratingRepository.findAverageRatingByBusiness(
+        business.id,
+      );
+
+      return { ...business, rating };
+    });
+
+    const businessArray = await Promise.all(allBusinessWithRating);
+
+    return businessArray.map((business) => new Business(business));
   }
 
   async findById(id: string): Promise<Business> {
@@ -113,7 +125,10 @@ export class BusinessService {
       });
     }
 
-    return new Business(business);
+    const businessRating =
+      await this.ratingRepository.findAverageRatingByBusiness(business.id);
+
+    return new Business({ ...business, rating: businessRating });
   }
 
   async findByOwner(owner_id: string) {
@@ -133,17 +148,22 @@ export class BusinessService {
       });
     }
 
-    return business.map((b) => new Business(b));
+    const allBusinessWithRating = business.map(async (business) => {
+      const rating = await this.ratingRepository.findAverageRatingByBusiness(
+        business.id,
+      );
+
+      return { ...business, rating };
+    });
+
+    const businessArray = await Promise.all(allBusinessWithRating);
+
+    return businessArray.map((business) => new Business(business));
   }
 
   async update(
     id: string,
-    {
-      category_id,
-      description,
-      name,
-      telephone,
-    }: UpdateBusinessDto,
+    { category_id, description, name, telephone }: UpdateBusinessDto,
     owner_id: string,
   ): Promise<Business> {
     const business = await this.businessRepository.findById(id);
