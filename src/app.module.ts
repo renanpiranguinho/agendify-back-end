@@ -13,6 +13,7 @@ import { ServicesModule } from './models/service/services.module';
 import { AddressModule } from './models/address/address.module';
 import { RatingModule } from './models/rating/rating.module';
 import { AvailabilityModule } from './models/availability/availability.module';
+import { SchedulingModule } from './models/scheduling/scheduling.module';
 
 @Module({
   imports: [
@@ -23,7 +24,8 @@ import { AvailabilityModule } from './models/availability/availability.module';
     BusinessModule,
     ServicesModule,
     RatingModule,
-    AvailabilityModule
+    AvailabilityModule,
+    SchedulingModule,
   ],
   providers: [
     PrismaService,
@@ -39,6 +41,6 @@ import { AvailabilityModule } from './models/availability/availability.module';
       provide: APP_INTERCEPTOR,
       useClass: NestResponseInterceptor,
     },
-  ],
+  ]
 })
 export class AppModule {}
