@@ -65,14 +65,6 @@ export class BusinessService {
       });
     }
 
-    const oldBusiness = await this.businessRepository.findByTel(telephone);
-
-    if (oldBusiness)
-      throw new BadRequestException({
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Telephone already in use',
-      });
-
     const newBusiness = await this.businessRepository.create({
       name,
       description,
@@ -183,14 +175,6 @@ export class BusinessService {
         message: 'Business Owner is not found',
       });
     }
-
-    const oldBusiness = await this.businessRepository.findByTel(telephone);
-
-    if (oldBusiness)
-      throw new BadRequestException({
-        statusCode: HttpStatus.BAD_REQUEST,
-        message: 'Telephone already in use',
-      });
 
     const userBusiness: Business[] = await this.businessRepository.findByOwner(
       owner_id,
