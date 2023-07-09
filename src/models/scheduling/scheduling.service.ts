@@ -45,7 +45,7 @@ export class SchedulingService {
     return new Scheduling(schedule);
   }
 
-  async findMySchedules(user_id: string, service_id: string, datetime: string) {
+  async findMySchedules(user_id: string, service_id: string, datetime: Date) {
     const mySchedules = await this.schedulingRepository.findMySchedules(user_id, service_id, datetime);
 
     if (!mySchedules) {

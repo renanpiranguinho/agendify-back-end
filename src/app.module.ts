@@ -12,6 +12,7 @@ import { BusinessModule } from './models/business/business.module';
 import { ServicesModule } from './models/service/services.module';
 import { AddressModule } from './models/address/address.module';
 import { RatingModule } from './models/rating/rating.module';
+import { AvailabilityModule } from './models/availability/availability.module';
 import { SchedulingModule } from './models/scheduling/scheduling.module';
 
 @Module({
@@ -23,6 +24,7 @@ import { SchedulingModule } from './models/scheduling/scheduling.module';
     BusinessModule,
     ServicesModule,
     RatingModule,
+    AvailabilityModule,
     SchedulingModule,
   ],
   providers: [

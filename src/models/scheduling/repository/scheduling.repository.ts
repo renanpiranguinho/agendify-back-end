@@ -4,7 +4,6 @@ import { Scheduling } from '../entities/scheduling.entity';
 import { ISchedulingRepository } from './i-scheduling.repository';
 import { UpdateSchedulingDto } from '../dto/update-scheduling.dto';
 import { Injectable } from '@nestjs/common';
-import moment from 'moment';
 
 @Injectable()
 export class SchedulingRepository implements ISchedulingRepository {
@@ -26,12 +25,12 @@ export class SchedulingRepository implements ISchedulingRepository {
     return scheduling;
   }
 
-  async findMySchedules(user_id: string, service_id: string, datetime: string): Promise<Scheduling[]> {
+  async findMySchedules(user_id: string, service_id: string, datetime: Date): Promise<Scheduling[]> {
 
     const where = {}
     where['user_id'] = user_id ?? undefined
     where['service_id'] = service_id ?? undefined
-    where['datetime'] = datetime ? new Date(datetime).toISOString() : undefined
+    where['datetime'] = datetime ?? undefined
 
 
     const mySchedules = await this.prismaService.scheduling.findMany({ where });
