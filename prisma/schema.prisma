@@ -38,7 +38,7 @@ model Business {
   is_operating Boolean
   description  String
   image_url    String?
-  telephone    String         @unique
+  telephone    String         
   address      Address?       @relation(fields: [address_id], references: [id])
   address_id   String?
   user         User           @relation(fields: [owner_id], references: [id])
