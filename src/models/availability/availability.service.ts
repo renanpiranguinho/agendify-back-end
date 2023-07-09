@@ -60,7 +60,6 @@ export class AvailabilityService {
     const businessAvailability: Availability[] =
       await this.availabilityRepository.findAvailabilityByBusiness(business_id);
 
-    console.log(createAvailabilityDto);
     const avalWeekDay: string[] = [];
     businessAvailability.forEach((ba) => {
       if (createAvailabilityDto.weekdays) {
@@ -73,7 +72,6 @@ export class AvailabilityService {
           avalWeekDay.push(ba.weekdays_id);
       }
     });
-    console.log(avalWeekDay);
 
     if (avalWeekDay.length > 0) {
       throw new BadRequestException({
@@ -178,7 +176,13 @@ export class AvailabilityService {
     });
   }
 
-  async update(id: string, updateAvailabilityDto: UpdateAvailabilityDto, user_id: string) {
+  async update(
+    id: string,
+    updateAvailabilityDto: UpdateAvailabilityDto,
+    user_id: string,
+  ) {
+
+    
     const availabilityExists = await this.availabilityRepository.findOne(id);
 
     if (!availabilityExists) {
@@ -203,13 +207,85 @@ export class AvailabilityService {
       });
     }
 
-
     const updatedAvailability = await this.availabilityRepository.update(
       id,
       updateAvailabilityDto,
     );
 
     return new Availability(updatedAvailability);
+  }
+
+  async updateByBusiness(
+    business_id: string,
+    updateAvailabilityDto: UpdateAvailabilityDto,
+    user_id: string,
+  ) {
+
+    const business = await this.businessRepository.findById(business_id);
+    if (!business) {
+      throw new NotFoundException({
+        statusCode: HttpStatus.NOT_FOUND,
+        message: 'Business not found',
+      });
+    }
+
+    const userBusiness: Business[] = await this.businessRepository.findByOwner(
+      user_id,
+    );
+
+    const belongUser = userBusiness.some(
+      (usrBusiness) => usrBusiness.id == business_id,
+    );
+
+    if (!belongUser) {
+      throw new BadRequestException({
+        statusCode: HttpStatus.BAD_REQUEST,
+        message: 'Business not belong user',
+      });
+    }
+
+    let availabilities: Availability[] = [];
+
+    if (updateAvailabilityDto.weekdays) {
+      for (const weekday_id of updateAvailabilityDto.weekdays) {
+        const availability = await this.availabilityRepository.updateByBusinessWeekDay(business_id, {
+          ...updateAvailabilityDto,
+          weekdays_id: weekday_id,
+          business_id,
+        });
+
+        if (!availability) {
+          throw new BadRequestException({
+            message: 'Error creating availability',
+            statusCode: HttpStatus.BAD_REQUEST,
+          });
+        }
+        availabilities.push(new Availability(availability));
+      }
+    } else {
+      const availability = await this.availabilityRepository.updateByBusinessWeekDay(business_id, {
+        ...updateAvailabilityDto,
+        business_id,
+      });
+
+      if (!availability) {
+        throw new BadRequestException({
+          message: 'Error creating availability',
+          statusCode: HttpStatus.BAD_REQUEST,
+        });
+      }
+      availabilities.push(new Availability(availability));
+    }
+
+    return availabilities.map((availability) => {
+      availability.start_time = getStringFromDateTime(
+        new Date(availability.start_time),
+      );
+      availability.end_time = getStringFromDateTime(
+        new Date(availability.end_time),
+      );
+      return new Availability(availability);
+    });
   }
 
   async delete(id: string, user_id: string) {
@@ -221,7 +297,7 @@ export class AvailabilityService {
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
-    
+
     const userBusiness: Business[] = await this.businessRepository.findByOwner(
       user_id,
     );

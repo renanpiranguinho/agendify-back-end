@@ -37,7 +37,6 @@ export class AvailabilityController {
       createAvailabilityDto,
       user.id,
     );
-    console.log(availability);
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.CREATED)
       .setHeaders({
@@ -109,6 +108,30 @@ export class AvailabilityController {
       .setStatus(HttpStatus.OK)
       .setHeaders({
         Location: `/availability/${updatedAvailability.id}`,
+      })
+      .setBody(updatedAvailability)
+      .build();
+
+    return response;
+  }
+
+  @UseGuards(JwtAuthGuard)
+  @Patch('business/:id')
+  async updateByBusiness(
+    @Param('id') id: string,
+    @Body() updateAvailabilityDto: UpdateAvailabilityDto,
+    @Req() { user }: IUserRequestData,
+  ) {
+    const updatedAvailability = await this.availabilityService.updateByBusiness(
+      id,
+      updateAvailabilityDto,
+      user.id,
+    );
+
+    const response = new NestResponseBuilder()
+      .setStatus(HttpStatus.OK)
+      .setHeaders({
+        Location: `/availability/business/${id}`,
       })
       .setBody(updatedAvailability)
       .build();
