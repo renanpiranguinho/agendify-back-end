@@ -72,6 +72,32 @@ export class AvailabilityRepository implements IAvailabilityRepository {
     return updatedAvailability;
   }
 
+  async updateByBusinessWeekDay(
+    business_id,
+    { start_time, end_time, weekdays_id }: UpdateAvailabilityDto,
+  ): Promise<Availability> {
+    const updatedAvailability = await this.prismaService.availability.upsert({
+      where: {
+        business_id_weekdays_id: {
+          business_id: business_id,
+          weekdays_id: weekdays_id,
+        },
+      },
+      create: {
+        start_time: getDateTimeFromString(start_time),
+        end_time: getDateTimeFromString(end_time),
+        business_id: business_id,
+        weekdays_id: weekdays_id,
+      },
+      update: {
+        start_time: getDateTimeFromString(start_time),
+        end_time: getDateTimeFromString(end_time),
+      },
+    });
+
+    return updatedAvailability;
+  }
+
   async delete(id: string): Promise<Availability> {
     const deletedAvailability = await this.prismaService.availability.delete({
       where: { id },

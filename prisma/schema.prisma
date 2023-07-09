@@ -123,6 +123,7 @@ model Availability {
   updated_at  DateTime  @updatedAt()
   business_id String
   Business    Business  @relation(fields: [business_id], references: [id])
+  @@unique([business_id, weekdays_id])
 }
 
 model WeekDays {

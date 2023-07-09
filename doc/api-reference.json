@@ -1,7 +1,7 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2023-07-08T17:52:29.420Z",
+  "__export_date": "2023-07-09T12:39:09.810Z",
   "__export_source": "insomnia.desktop.app:v2023.4.0",
   "resources": [
     {
@@ -1335,11 +1335,37 @@
       "_type": "request"
     },
     {
+      "_id": "req_df57131c81cb4d99a1ce9b3f83ee7cd9",
+      "parentId": "fld_06f957fce4a94c1b9092482742670cf1",
+      "modified": 1688906249071,
+      "created": 1688905878579,
+      "url": "{{ _.localbaseurl }}/availability/business/1583444a-b932-4ca0-a174-dbb01986dd3e",
+      "name": "UpdateByBusiness",
+      "description": "",
+      "method": "PATCH",
+      "body": {
+        "mimeType": "application/json",
+        "text": "{\n\t\"start_time\": \"07:00:00\",\n\t\"end_time\": \"12:00:00\",\n\t\"weekdays\" : [\"1\", \"7\"]\n\t{#     weekdays_id: \"x\"  or    weekdays: [\"x\", \"x\"]  #}\n\t\n}\n"
+      },
+      "parameters": [],
+      "headers": [{ "name": "Content-Type", "value": "application/json" }],
+      "authentication": { "type": "bearer", "token": "{{ _.access_token }}" },
+      "metaSortKey": -1672839095628.25,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
       "_id": "req_a0c7e91d4a164098a219d7fc1e2056ea",
       "parentId": "fld_06f957fce4a94c1b9092482742670cf1",
-      "modified": 1688838587812,
+      "modified": 1688906274876,
       "created": 1688821578472,
-      "url": "{{ _.localbaseurl }}/availability/f8401f2f-b934-4280-8bb7-2c975e877189",
+      "url": "{{ _.localbaseurl }}/availability/b9b20364-e88f-4bcf-8f47-7e9e0bf1cc94",
       "name": "DeleteById",
       "description": "",
       "method": "DELETE",
