@@ -35,6 +35,18 @@ export class RatingService {
       });
     }
 
+    const ratingAlreadyExists = await this.ratingRepository.findMyRatings(
+      userId,
+      createRatingDto.business_id,
+    );
+
+    if (ratingAlreadyExists.length > 0) {
+      throw new BadRequestException({
+        message: 'Rating in this business already exists',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
     const rating = await this.ratingRepository.create(createRatingDto, userId);
 
     if (!rating) {
