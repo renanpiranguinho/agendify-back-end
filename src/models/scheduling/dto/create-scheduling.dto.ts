@@ -1,8 +1,5 @@
 import {
-  IsEmpty,
-  IsOptional,
   IsString,
-  IsDate,
   IsNotEmpty
 } from 'class-validator';
 
@@ -11,10 +8,10 @@ export class CreateSchedulingDto {
   @IsNotEmpty({
     message: 'Date is required',
   })
-  @IsDate({
+  @IsString({
     message: 'Date must be a Date',
   })
-  datetime: Date;
+  datetime: string;
 
   //@IsOptional()
   //@IsString({

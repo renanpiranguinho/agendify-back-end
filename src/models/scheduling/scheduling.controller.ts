@@ -77,7 +77,7 @@ export class SchedulingController {
   async findMySchedules(
     @Req() { user }: IUserRequestData,
     @Req() service_id : string,
-    @Req() datetime: Date,
+    @Req() datetime: string,
   ): Promise<NestResponse> {
     const mySchedules = await this.schedulingService.findMySchedules(user.id, service_id, datetime);
 
