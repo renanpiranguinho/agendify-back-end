@@ -6,21 +6,43 @@ import { Scheduling } from './entities/scheduling.entity';
 
 @Injectable()
 export class SchedulingService {
-  constructor(
-    private readonly schedulingRepository: SchedulingRepository
-  ) { }
+  constructor(private readonly schedulingRepository: SchedulingRepository) {}
 
-  async create(createSchedulingDto: CreateSchedulingDto) {
-    const scheduleExists = await this.schedulingRepository.findMySchedules(null, createSchedulingDto.service_id, createSchedulingDto.datetime);
+  async create(createSchedulingDto: CreateSchedulingDto, userId: string) {
+    createSchedulingDto.user_id = userId;
 
-    if (!scheduleExists) {
+    try {
+      createSchedulingDto.datetime = new Date(createSchedulingDto.datetime);
+    } catch (error) {
       throw new BadRequestException({
-        message: "This schedule has already been booked.",
+        message: 'Invalid date format.',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
 
-    const schedule = await this.schedulingRepository.create(createSchedulingDto);
+    if (createSchedulingDto.datetime < new Date()) {
+      throw new BadRequestException({
+        message: 'You cannot schedule in the past.',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const scheduleExists = await this.schedulingRepository.findMySchedules(
+      null,
+      createSchedulingDto.service_id,
+      createSchedulingDto.datetime,
+    );
+
+    if (!scheduleExists) {
+      throw new BadRequestException({
+        message: 'This schedule has already been booked.',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const schedule = await this.schedulingRepository.create(
+      createSchedulingDto,
+    );
 
     if (!schedule) {
       throw new BadRequestException({
@@ -46,11 +68,16 @@ export class SchedulingService {
   }
 
   async findMySchedules(user_id: string, service_id: string, datetime: Date) {
-    const mySchedules = await this.schedulingRepository.findMySchedules(user_id, service_id, datetime);
+    const mySchedules = await this.schedulingRepository.findMySchedules(
+      user_id,
+      service_id,
+      datetime,
+    );
 
     if (!mySchedules) {
       throw new BadRequestException({
-        message: "There are no appointments scheduled for the provided parameters.",
+        message:
+          'There are no appointments scheduled for the provided parameters.',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
@@ -65,7 +92,6 @@ export class SchedulingService {
   }
 
   async update(id: string, updateRatingDto: UpdateSchedulingDto) {
-    
     const scheduleExists = await this.schedulingRepository.findOne(id);
     if (!scheduleExists) {
       throw new BadRequestException({
@@ -74,15 +100,22 @@ export class SchedulingService {
       });
     }
 
-    const scheduleAllowed = await this.schedulingRepository.findMySchedules(null, updateRatingDto.service_id, updateRatingDto.datetime);
+    const scheduleAllowed = await this.schedulingRepository.findMySchedules(
+      null,
+      updateRatingDto.service_id,
+      updateRatingDto.datetime,
+    );
     if (!scheduleAllowed) {
       throw new BadRequestException({
-        message: "This schedule has already been booked.",
+        message: 'This schedule has already been booked.',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
 
-    const updatedSchedule = await this.schedulingRepository.update( id, updateRatingDto );
+    const updatedSchedule = await this.schedulingRepository.update(
+      id,
+      updateRatingDto,
+    );
 
     return new Scheduling(updatedSchedule);
   }

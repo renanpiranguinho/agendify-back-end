@@ -30,9 +30,13 @@ export class SchedulingController {
   @UseGuards(JwtAuthGuard)
   @Post()
   async create(
-    @Body() createSchedulingDto: CreateSchedulingDto
+    @Body() createSchedulingDto: CreateSchedulingDto,
+    @Req() { user }: IUserRequestData,
   ): Promise<NestResponse> {
-    const scheduling = await this.schedulingService.create(createSchedulingDto);
+    const scheduling = await this.schedulingService.create(
+      createSchedulingDto,
+      user.id,
+    );
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.CREATED)
@@ -76,10 +80,14 @@ export class SchedulingController {
   @Get('my-schedules')
   async findMySchedules(
     @Req() { user }: IUserRequestData,
-    @Req() service_id : string,
+    @Req() service_id: string,
     @Req() datetime: Date,
   ): Promise<NestResponse> {
-    const mySchedules = await this.schedulingService.findMySchedules(user.id, service_id, datetime);
+    const mySchedules = await this.schedulingService.findMySchedules(
+      user.id,
+      service_id,
+      datetime,
+    );
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)
@@ -95,7 +103,10 @@ export class SchedulingController {
     @Param('id') id: string,
     @Body() updateScheduleDto: UpdateSchedulingDto,
   ) {
-    const updatedSchedule = await this.schedulingService.update(id, updateScheduleDto);
+    const updatedSchedule = await this.schedulingService.update(
+      id,
+      updateScheduleDto,
+    );
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)

@@ -1,19 +1,10 @@
-import {
-  IsEmpty,
-  IsOptional,
-  IsString,
-  IsDate,
-  IsNotEmpty
-} from 'class-validator';
+import { IsEmpty, IsString, IsNotEmpty, IsDateString } from 'class-validator';
 
 export class CreateSchedulingDto {
-
   @IsNotEmpty({
     message: 'Date is required',
   })
-  @IsDate({
-    message: 'Date must be a Date',
-  })
+  @IsDateString({})
   datetime: Date;
 
   //@IsOptional()
@@ -22,12 +13,7 @@ export class CreateSchedulingDto {
   //})
   //paymentType: string;
 
-  @IsNotEmpty({
-    message: 'Schedule must have a User ID',
-  })
-  @IsString({
-    message: 'User ID must be a string',
-  })
+  @IsEmpty()
   user_id: string;
 
   @IsNotEmpty({
@@ -37,5 +23,4 @@ export class CreateSchedulingDto {
     message: 'Service ID must be a string',
   })
   service_id: string;
-
 }
