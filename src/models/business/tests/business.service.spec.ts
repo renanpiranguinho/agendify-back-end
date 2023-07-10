@@ -11,12 +11,15 @@ import {
   mockUpdateBusinessReturnService,
   mockUserCreatedBusiness,
 } from './mocks';
+import { AddressRepository } from '../../address/repository/address.repository';
+import { RatingRepository } from '../../rating/repository/rating.repository';
 
 describe('BusinessService', () => {
   let service: BusinessService;
   let businessRepository: BusinessRepository;
   let usersRepository: UsersRepository;
   let prismaService: PrismaService;
+  let addressRepository: AddressRepository;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
@@ -57,6 +60,8 @@ describe('BusinessService', () => {
               .mockReturnValue(mockRemoveBusinessReturnService),
           },
         },
+        AddressRepository,
+        RatingRepository,
         {
           provide: UsersRepository,
           useValue: {
@@ -70,6 +75,7 @@ describe('BusinessService', () => {
     businessRepository = module.get<BusinessRepository>(BusinessRepository);
     usersRepository = module.get<UsersRepository>(UsersRepository);
     prismaService = module.get<PrismaService>(PrismaService);
+    addressRepository = module.get<AddressRepository>(AddressRepository);
   });
 
   it('should be defined', () => {
@@ -77,5 +83,6 @@ describe('BusinessService', () => {
     expect(businessRepository).toBeDefined();
     expect(usersRepository).toBeDefined();
     expect(prismaService).toBeDefined();
+    expect(addressRepository).toBeDefined();
   });
 });

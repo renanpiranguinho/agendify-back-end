@@ -1,9 +1,9 @@
-import { PrismaService } from 'prisma/prisma.service';
 import { CreateRatingDto } from '../dto/create-rating.dto';
 import { Rating } from '../entities/rating.entity';
 import { IRatingRepository } from './i-rating.repository';
 import { UpdateRatingDto } from '../dto/update-rating.dto';
 import { Injectable } from '@nestjs/common';
+import { PrismaService } from '../../../../prisma/prisma.service';
 
 export interface IRatingInfo {
   averageRating: number;

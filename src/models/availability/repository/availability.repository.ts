@@ -1,12 +1,10 @@
-import { PrismaService } from 'prisma/prisma.service';
 import { Availability } from '../entities/availability.entity';
 import { IAvailabilityRepository } from './i-availability.repository';
 import { UpdateAvailabilityDto } from '../dto/update-availability.dto';
 import { Injectable } from '@nestjs/common';
 import { CreateAvailabilityDto } from '../dto/create-availability.dto';
-import moment from 'moment';
-import { set } from 'date-fns';
-import { getDateTimeFromString } from 'src/utils/format-data';
+import { PrismaService } from '../../../../prisma/prisma.service';
+import { getDateTimeFromString } from '../../../utils/format-data';
 
 @Injectable()
 export class AvailabilityRepository implements IAvailabilityRepository {

@@ -1,4 +1,4 @@
-import { IRatingInfo } from 'src/models/rating/repository/rating.repository';
+import { IRatingInfo } from "../../rating/repository/rating.repository";
 
 export class Business {
   id: string;

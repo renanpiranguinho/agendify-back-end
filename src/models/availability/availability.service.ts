@@ -11,7 +11,7 @@ import { Availability } from './entities/availability.entity';
 import { BusinessRepository } from '../business/repository/business.repository';
 import { CreateAvailabilityDto } from './dto/create-availability.dto';
 import { Business } from '../business/entities/business.entity';
-import { getStringFromDateTime } from 'src/utils/format-data';
+import { getStringFromDateTime } from '../../utils/format-data';
 
 @Injectable()
 export class AvailabilityService {
