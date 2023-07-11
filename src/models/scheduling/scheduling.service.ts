@@ -3,10 +3,16 @@ import { CreateSchedulingDto } from './dto/create-scheduling.dto';
 import { UpdateSchedulingDto } from './dto/update-scheduling.dto';
 import { SchedulingRepository } from './repository/scheduling.repository';
 import { Scheduling } from './entities/scheduling.entity';
+import { AvailabilityRepository } from '../availability/repository/availability.repository';
+import { ServicesRepository } from '../service/repository/services.repository';
 
 @Injectable()
 export class SchedulingService {
-  constructor(private readonly schedulingRepository: SchedulingRepository) {}
+  constructor(
+    private readonly schedulingRepository: SchedulingRepository,
+    private readonly availabilityRepository: AvailabilityRepository,
+    private readonly servicesRepository: ServicesRepository,
+  ) {}
 
   async create(
     {
@@ -17,6 +23,29 @@ export class SchedulingService {
     userId: string,
   ) {
     createSchedulingDto.user_id = userId;
+
+    const serviceExists = await this.servicesRepository.findById(
+      createSchedulingDto.service_id,
+    );
+
+    if (!serviceExists) {
+      throw new BadRequestException({
+        message: 'Service not found.',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    const businessAvailable =
+      await this.availabilityRepository.findAvailabilityByBusiness(
+        serviceExists.business_id,
+      );
+
+    if (businessAvailable.length === 0) {
+      throw new BadRequestException({
+        message: 'This business has no availability.',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
 
     const now = new Date();
     const startDateTime = new Date(start_datetime);

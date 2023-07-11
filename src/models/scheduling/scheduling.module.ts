@@ -6,6 +6,8 @@ import { BusinessRepository } from '../business/repository/business.repository';
 import { SchedulingRepository } from './repository/scheduling.repository';
 import { PrismaService } from 'prisma/prisma.service';
 import { JwtService } from '@nestjs/jwt';
+import { ServicesRepository } from '../service/repository/services.repository';
+import { AvailabilityRepository } from '../availability/repository/availability.repository';
 
 @Module({
   controllers: [SchedulingController],
@@ -16,6 +18,8 @@ import { JwtService } from '@nestjs/jwt';
     SchedulingRepository,
     PrismaService,
     JwtService,
+    ServicesRepository,
+    AvailabilityRepository,
   ],
 })
 export class SchedulingModule {}
