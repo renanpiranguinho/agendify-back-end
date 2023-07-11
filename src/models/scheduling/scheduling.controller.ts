@@ -99,6 +99,30 @@ export class SchedulingController {
   }
 
   @UseGuards(JwtAuthGuard)
+  @Get('business-schedules')
+  async findBusinessSchedules(
+    @Req() { user }: IUserRequestData,
+    @Query()
+    params: { business_id: string; day: string; month: string; year: string },
+  ): Promise<NestResponse> {
+    const businessSchedules =
+      await this.schedulingService.findSchedulesByBusiness(
+        user.id,
+        params.business_id,
+        params.day,
+        params.month,
+        params.year,
+      );
+
+    const response = new NestResponseBuilder()
+      .setStatus(HttpStatus.OK)
+      .setBody(businessSchedules)
+      .build();
+
+    return response;
+  }
+
+  @UseGuards(JwtAuthGuard)
   @Patch(':id')
   async update(
     @Param('id') id: string,

@@ -112,6 +112,24 @@ export class SchedulingService {
     return allSchedules.map((schedule) => new Scheduling(schedule));
   }
 
+  async findSchedulesByBusiness(
+    user_id: string,
+    business_id: string,
+    day: string,
+    month: string,
+    year: string,
+  ) {
+    const schedules = await this.schedulingRepository.findSchedulesByBusinessId(
+      user_id,
+      business_id,
+      day,
+      month,
+      year,
+    );
+
+    return schedules.map((schedule) => new Scheduling(schedule));
+  }
+
   async update(
     id: string,
     { start_datetime, end_datetime, ...updateRatingDto }: UpdateSchedulingDto,
