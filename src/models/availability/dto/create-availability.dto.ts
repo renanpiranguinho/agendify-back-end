@@ -31,7 +31,7 @@ export class CreateAvailabilityDto {
   @IsNotEmpty({
     message: 'weekdays is required',
   })
-  weekdays: string[];
+  weekdays?: string[];
 
   @ValidateIf(o => o.weekdays == undefined)
   @IsString({
@@ -40,7 +40,7 @@ export class CreateAvailabilityDto {
   @IsNotEmpty({
     message: 'weekdays_id is required',
   })
-  weekdays_id: string;
+  weekdays_id?: string;
 
   @IsString({
     message: 'Business ID must be a string',
