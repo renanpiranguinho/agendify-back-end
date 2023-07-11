@@ -2,16 +2,16 @@ import { IsEmpty, IsString, IsNotEmpty, IsDateString } from 'class-validator';
 
 export class CreateSchedulingDto {
   @IsNotEmpty({
-    message: 'Date is required',
+    message: 'Start date is required',
   })
   @IsDateString({})
-  datetime: Date;
+  start_datetime: Date;
 
-  //@IsOptional()
-  //@IsString({
-  //  message: 'PaymentType ID must be a string',
-  //})
-  //paymentType: string;
+  @IsNotEmpty({
+    message: 'End date is required',
+  })
+  @IsDateString({})
+  end_datetime: Date;
 
   @IsEmpty()
   user_id: string;

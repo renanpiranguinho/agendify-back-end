@@ -1,7 +1,8 @@
 export class Scheduling {
   id: string;
-  datetime: Date;
-  //paymentType?: string;
+  start_datetime: Date;
+  end_datetime: Date;
+
   user_id: string;
   service_id: string;
 

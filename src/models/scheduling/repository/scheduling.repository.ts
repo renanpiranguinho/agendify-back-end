@@ -7,11 +7,11 @@ import { Injectable } from '@nestjs/common';
 
 @Injectable()
 export class SchedulingRepository implements ISchedulingRepository {
-  constructor(private readonly prismaService: PrismaService) { }
+  constructor(private readonly prismaService: PrismaService) {}
 
-  async create( createSchedulingDto: CreateSchedulingDto): Promise<Scheduling> {
+  async create(createSchedulingDto: CreateSchedulingDto): Promise<Scheduling> {
     const scheduling = await this.prismaService.scheduling.create({
-      data: { ...createSchedulingDto  },
+      data: { ...createSchedulingDto },
     });
 
     return scheduling;
@@ -25,36 +25,47 @@ export class SchedulingRepository implements ISchedulingRepository {
     return scheduling;
   }
 
-  async findMySchedules(user_id: string, service_id: string, datetime: Date): Promise<Scheduling[]> {
+  async findMySchedules(
+    user_id: string,
+    service_id: string,
+    start_datetime: Date,
+    end_datetime: Date,
+  ): Promise<Scheduling[]> {
+    const where = {};
+    where['user_id'] = user_id ?? undefined;
+    where['service_id'] = service_id ?? undefined;
+    where['start_datetime'] = start_datetime ?? undefined;
+    where['end_datetime'] = end_datetime ?? undefined;
 
-    const where = {}
-    where['user_id'] = user_id ?? undefined
-    where['service_id'] = service_id ?? undefined
-    where['datetime'] = datetime ?? undefined
-
-
-    const mySchedules = await this.prismaService.scheduling.findMany({ where });
+    const mySchedules = await this.prismaService.scheduling.findMany({
+      where,
+    });
 
     return mySchedules;
   }
-  
+
   async findAll(): Promise<Scheduling[]> {
     const allSchedules = await this.prismaService.scheduling.findMany();
 
     return allSchedules;
   }
 
-  async update( id: string, { datetime }: UpdateSchedulingDto): Promise<Scheduling> {
+  async update(
+    id: string,
+    { start_datetime, end_datetime, service_id, user_id }: UpdateSchedulingDto,
+  ): Promise<Scheduling> {
     const updatedRating = await this.prismaService.scheduling.update({
       where: { id },
-      data: { datetime },
+      data: { start_datetime, end_datetime, service_id, user_id },
     });
 
     return updatedRating;
   }
 
   async delete(id: string): Promise<Scheduling> {
-    const deletedRating = await this.prismaService.scheduling.delete({ where: { id } });
+    const deletedRating = await this.prismaService.scheduling.delete({
+      where: { id },
+    });
 
     return deletedRating;
   }

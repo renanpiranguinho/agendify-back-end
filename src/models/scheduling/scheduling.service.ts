@@ -8,41 +8,56 @@ import { Scheduling } from './entities/scheduling.entity';
 export class SchedulingService {
   constructor(private readonly schedulingRepository: SchedulingRepository) {}
 
-  async create(createSchedulingDto: CreateSchedulingDto, userId: string) {
+  async create(
+    {
+      start_datetime,
+      end_datetime,
+      ...createSchedulingDto
+    }: CreateSchedulingDto,
+    userId: string,
+  ) {
     createSchedulingDto.user_id = userId;
 
-    try {
-      createSchedulingDto.datetime = new Date(createSchedulingDto.datetime);
-    } catch (error) {
-      throw new BadRequestException({
-        message: 'Invalid date format.',
-        statusCode: HttpStatus.BAD_REQUEST,
-      });
-    }
+    const now = new Date();
+    const startDateTime = new Date(start_datetime);
+    const endDateTime = new Date(end_datetime);
 
-    if (createSchedulingDto.datetime < new Date()) {
+    if (startDateTime < now) {
       throw new BadRequestException({
         message: 'You cannot schedule in the past.',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
 
+    if (startDateTime > endDateTime) {
+      throw new BadRequestException({
+        message: 'The start date cannot be greater than the end date.',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    startDateTime.setHours(startDateTime.getHours() - 3);
+    endDateTime.setHours(endDateTime.getHours() - 3);
+
     const scheduleExists = await this.schedulingRepository.findMySchedules(
       null,
       createSchedulingDto.service_id,
-      createSchedulingDto.datetime,
+      startDateTime,
+      endDateTime,
     );
 
-    if (!scheduleExists) {
+    if (scheduleExists.length > 0) {
       throw new BadRequestException({
         message: 'This schedule has already been booked.',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
 
-    const schedule = await this.schedulingRepository.create(
-      createSchedulingDto,
-    );
+    const schedule = await this.schedulingRepository.create({
+      start_datetime: startDateTime,
+      end_datetime: endDateTime,
+      ...createSchedulingDto,
+    });
 
     if (!schedule) {
       throw new BadRequestException({
@@ -67,11 +82,17 @@ export class SchedulingService {
     return new Scheduling(schedule);
   }
 
-  async findMySchedules(user_id: string, service_id: string, datetime: Date) {
+  async findMySchedules(
+    user_id: string,
+    service_id: string,
+    start_datetime: Date,
+    end_datetime: Date,
+  ) {
     const mySchedules = await this.schedulingRepository.findMySchedules(
       user_id,
       service_id,
-      datetime,
+      start_datetime,
+      end_datetime,
     );
 
     if (!mySchedules) {
@@ -91,7 +112,10 @@ export class SchedulingService {
     return allSchedules.map((schedule) => new Scheduling(schedule));
   }
 
-  async update(id: string, updateRatingDto: UpdateSchedulingDto) {
+  async update(
+    id: string,
+    { start_datetime, end_datetime, ...updateRatingDto }: UpdateSchedulingDto,
+  ) {
     const scheduleExists = await this.schedulingRepository.findOne(id);
     if (!scheduleExists) {
       throw new BadRequestException({
@@ -100,22 +124,46 @@ export class SchedulingService {
       });
     }
 
+    const now = new Date();
+    const startDateTime = new Date(start_datetime);
+    const endDateTime = new Date(end_datetime);
+
+    if (startDateTime < now) {
+      throw new BadRequestException({
+        message: 'You cannot schedule in the past.',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    if (startDateTime > endDateTime) {
+      throw new BadRequestException({
+        message: 'The start date cannot be greater than the end date.',
+        statusCode: HttpStatus.BAD_REQUEST,
+      });
+    }
+
+    startDateTime.setHours(startDateTime.getHours() - 3);
+    endDateTime.setHours(endDateTime.getHours() - 3);
+
     const scheduleAllowed = await this.schedulingRepository.findMySchedules(
       null,
-      updateRatingDto.service_id,
-      updateRatingDto.datetime,
+      updateRatingDto?.service_id,
+      startDateTime,
+      endDateTime,
     );
-    if (!scheduleAllowed) {
+
+    if (scheduleAllowed.length > 0) {
       throw new BadRequestException({
         message: 'This schedule has already been booked.',
         statusCode: HttpStatus.BAD_REQUEST,
       });
     }
 
-    const updatedSchedule = await this.schedulingRepository.update(
-      id,
-      updateRatingDto,
-    );
+    const updatedSchedule = await this.schedulingRepository.update(id, {
+      start_datetime: startDateTime,
+      end_datetime: endDateTime,
+      ...updateRatingDto,
+    });
 
     return new Scheduling(updatedSchedule);
   }

@@ -9,7 +9,7 @@ import {
   HttpStatus,
   UseGuards,
   Req,
-  Optional,
+  Query,
 } from '@nestjs/common';
 import { SchedulingService } from './scheduling.service';
 import { CreateSchedulingDto } from './dto/create-scheduling.dto';
@@ -80,13 +80,14 @@ export class SchedulingController {
   @Get('my-schedules')
   async findMySchedules(
     @Req() { user }: IUserRequestData,
-    @Req() service_id: string,
-    @Req() datetime: Date,
+    @Query()
+    params: { service_id: string; start_datetime: Date; end_datetime: Date },
   ): Promise<NestResponse> {
     const mySchedules = await this.schedulingService.findMySchedules(
       user.id,
-      service_id,
-      datetime,
+      params.service_id,
+      params.start_datetime,
+      params.end_datetime,
     );
 
     const response = new NestResponseBuilder()
