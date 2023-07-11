@@ -39,6 +39,12 @@ export class SchedulingRepository implements ISchedulingRepository {
 
     const mySchedules = await this.prismaService.scheduling.findMany({
       where,
+      include: {
+        Service: true,
+      },
+      orderBy: {
+        start_datetime: 'asc',
+      },
     });
 
     return mySchedules;
@@ -70,6 +76,13 @@ export class SchedulingRepository implements ISchedulingRepository {
 
     const schedules = await this.prismaService.scheduling.findMany({
       where,
+      include: {
+        user: true,
+        Service: true,
+      },
+      orderBy: {
+        start_datetime: 'asc',
+      },
     });
 
     return schedules;
