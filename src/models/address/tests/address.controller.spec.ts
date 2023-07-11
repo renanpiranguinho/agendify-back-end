@@ -1,21 +1,45 @@
 import { Test, TestingModule } from '@nestjs/testing';
-import { EncryptData } from '../../../utils/encrypt-data';
 import { JwtService } from '@nestjs/jwt';
 import { AddressService } from '../address.service';
 import { AddressController } from '../address.controller';
 import { AddressRepository } from '../repository/address.repository';
 import { PrismaService } from '../../../../prisma/prisma.service';
+import {
+  mockCreateAddressInput,
+  mockCreateAddressReturnController,
+  mockCreateAddressReturnService,
+  mockFindAddressReturnController,
+  mockFindOneAddressReturnController,
+  mockRemoveAddressReturnController,
+  mockRemoveAddressReturnService,
+  mockUpdateAddressInput,
+  mockUpdateAddressReturnController,
+  mockUpdateAddressReturnService,
+  mockUser,
+  mockedAddressId,
+} from './mocks';
 
-describe('Addressontroller', () => {
-  let controller: AddressController;
+describe('AddressController', () => {
+  let addressController: AddressController;
 
-beforeEach(async () => {
+  beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
       controllers: [AddressController],
       providers: [
-          AddressService,
-          AddressRepository,
-          PrismaService,
+        {
+          provide: AddressService,
+          useValue: {
+            create: jest.fn().mockReturnValue(mockCreateAddressReturnService),
+            findMine: jest
+              .fn()
+              .mockReturnValue([mockCreateAddressReturnService]),
+            findById: jest.fn().mockReturnValue(mockCreateAddressReturnService),
+            update: jest.fn().mockReturnValue(mockUpdateAddressReturnService),
+            remove: jest.fn().mockReturnValue(mockRemoveAddressReturnService),
+          },
+        },
+        AddressRepository,
+        PrismaService,
         {
           provide: JwtService,
           useValue: {
@@ -25,10 +49,58 @@ beforeEach(async () => {
       ],
     }).compile();
 
-    controller = module.get<AddressController>(AddressController);
+    addressController = module.get<AddressController>(AddressController);
   });
 
   it('should be defined', () => {
-    expect(controller).toBeDefined();
+    expect(addressController).toBeDefined();
+  });
+
+  describe('Create Address', () => {
+    it('should create an address', async () => {
+      const address = await addressController.create(
+        mockCreateAddressInput,
+        mockUser,
+      );
+
+      expect(address).toEqual(mockCreateAddressReturnController);
+    });
+  });
+
+  describe('Find my Addresses', () => {
+    it('should find my addresses', async () => {
+      const address = await addressController.findMe(mockUser);
+
+      expect(address).toEqual(mockFindAddressReturnController);
+    });
+  });
+
+  describe('Find by Id', () => {
+    it('should find an address by ID', async () => {
+      const address = await addressController.findOne(mockedAddressId);
+
+      expect(address).toEqual(mockFindOneAddressReturnController);
+    });
+  });
+
+  describe('Update', () => {
+    it('should update an address', async () => {
+      const address = await addressController.update(
+        mockedAddressId,
+        mockUpdateAddressInput,
+      );
+
+      expect(address).toEqual(mockUpdateAddressReturnController);
+    });
+  });
+
+  describe('Remove', () => {
+    it('should remove an address', async () => {
+      const address = await addressController.remove(
+        mockedAddressId,
+      );
+
+      expect(address).toEqual(mockRemoveAddressReturnController);
+    });
   });
 });
