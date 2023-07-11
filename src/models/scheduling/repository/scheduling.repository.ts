@@ -51,30 +51,22 @@ export class SchedulingRepository implements ISchedulingRepository {
     month: string,
     year: string,
   ): Promise<Scheduling[]> {
-    let date = null;
-    if (day && month && year) {
-      date = new Date(`${year}-${month}-${day}`);
-    }
+    const date =
+      day && month && year ? new Date(`${year}-${month}-${day}`) : null;
+
     const startOfDay = new Date(date);
     startOfDay.setUTCHours(0, 0, 0, 0);
 
     const endOfDay = new Date(date);
     endOfDay.setUTCHours(23, 59, 59, 999);
 
-    const where = {};
-
-    where['Service'] = {
-      business_id: business_id,
+    const where = {
+      Service: {
+        business_id: business_id,
+      },
+      start_datetime: date ? { gte: startOfDay } : undefined,
+      end_datetime: date ? { lte: endOfDay } : undefined,
     };
-
-    if (date) {
-      where['start_datetime'] = {
-        gte: startOfDay,
-      };
-      where['end_datetime'] = {
-        lte: endOfDay,
-      };
-    }
 
     const schedules = await this.prismaService.scheduling.findMany({
       where,
