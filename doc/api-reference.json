@@ -1,7 +1,7 @@
 {
   "_type": "export",
   "__export_format": 4,
-  "__export_date": "2023-07-11T02:03:29.261Z",
+  "__export_date": "2023-07-11T03:18:37.699Z",
   "__export_source": "insomnia.desktop.app:v2023.4.0",
   "resources": [
     {
@@ -1387,7 +1387,7 @@
     {
       "_id": "req_a01780debeb04e4491fd9c16cec64011",
       "parentId": "fld_e6168a9e3e024db0b40d94595f94fb37",
-      "modified": 1689039791781,
+      "modified": 1689045337250,
       "created": 1688942957989,
       "url": "{{ _.localbaseurl }}/scheduling",
       "name": "Create",
@@ -1395,7 +1395,7 @@
       "method": "POST",
       "body": {
         "mimeType": "application/json",
-        "text": "{\n\t\"service_id\": \"5adf7cb1-ed20-4d9b-a4c9-9cb79a0bfe25\",\n\t\"start_datetime\": \"2023-07-13 10:30:00\",\n\t\"end_datetime\": \"2023-07-13 11:30:00\"\n}\n"
+        "text": "{\n\t\"service_id\": \"5adf7cb1-ed20-4d9b-a4c9-9cb79a0bfe25\",\n\t\"start_datetime\": \"2023-07-12 10:30:00\",\n\t\"end_datetime\": \"2023-07-12 11:30:00\"\n}\n"
       },
       "parameters": [],
       "headers": [
@@ -1539,6 +1539,65 @@
       ],
       "authentication": { "type": "bearer", "token": "{{ _.access_token }}" },
       "metaSortKey": -1673301593688.9062,
+      "isPrivate": false,
+      "settingStoreCookies": true,
+      "settingSendCookies": true,
+      "settingDisableRenderRequestBody": false,
+      "settingEncodeUrl": true,
+      "settingRebuildPath": true,
+      "settingFollowRedirects": "global",
+      "_type": "request"
+    },
+    {
+      "_id": "req_06d76db080f6474786f9f977c6ffac6f",
+      "parentId": "fld_e6168a9e3e024db0b40d94595f94fb37",
+      "modified": 1689045326788,
+      "created": 1689043267042,
+      "url": "{{ _.localbaseurl }}/scheduling/business-schedules",
+      "name": "ReadBusinessScheduling",
+      "description": "",
+      "method": "GET",
+      "body": {},
+      "parameters": [
+        {
+          "id": "pair_b742fb2802b843b2a841c4d7fa8ca355",
+          "name": "business_id",
+          "value": "67c516f3-7388-4767-aad4-aa7fc79e729e",
+          "description": "",
+          "disabled": false
+        },
+        {
+          "id": "pair_2d7898b588024735a3095452923ab9b2",
+          "name": "day",
+          "value": "12",
+          "description": "",
+          "disabled": false
+        },
+        {
+          "id": "pair_596ce0071da44effb434d5ea958b6d3f",
+          "name": "month",
+          "value": "07",
+          "description": "",
+          "disabled": false
+        },
+        {
+          "id": "pair_9459cd9472b044f6bf8d34d637c08152",
+          "name": "year",
+          "value": "2023",
+          "description": "",
+          "disabled": false
+        }
+      ],
+      "headers": [
+        {
+          "id": "pair_d81fe4452c9c439c899f89f098a186c9",
+          "name": "",
+          "value": "",
+          "description": ""
+        }
+      ],
+      "authentication": { "type": "bearer", "token": "{{ _.access_token }}" },
+      "metaSortKey": -1673070344696.0781,
       "isPrivate": false,
       "settingStoreCookies": true,
       "settingSendCookies": true,
