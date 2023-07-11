@@ -18,8 +18,8 @@ export const getDateTimeFromString = (dateTime: string) => {
 };
 
 export const getStringFromDateTime = (dateTime: Date) => {
-  const isoDate = dateTime.toISOString()
-  const times = isoDate.split('T')[1].replace('.000Z', '')
+  const isoDate = dateTime.toISOString();
+  const times = isoDate.split('T')[1].replace('.000Z', '');
 
-  return times
+  return times;
 };

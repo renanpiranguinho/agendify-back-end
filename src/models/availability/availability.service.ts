@@ -83,7 +83,7 @@ export class AvailabilityService {
       });
     }
 
-    let availabilities: Availability[] = [];
+    const availabilities: Availability[] = [];
 
     if (createAvailabilityDto.weekdays) {
       for (const weekday_id of createAvailabilityDto.weekdays) {
@@ -181,8 +181,6 @@ export class AvailabilityService {
     updateAvailabilityDto: UpdateAvailabilityDto,
     user_id: string,
   ) {
-
-    
     const availabilityExists = await this.availabilityRepository.findOne(id);
 
     if (!availabilityExists) {
@@ -220,7 +218,6 @@ export class AvailabilityService {
     updateAvailabilityDto: UpdateAvailabilityDto,
     user_id: string,
   ) {
-
     const business = await this.businessRepository.findById(business_id);
     if (!business) {
       throw new NotFoundException({
@@ -244,15 +241,19 @@ export class AvailabilityService {
       });
     }
 
-    let availabilities: Availability[] = [];
+    const availabilities: Availability[] = [];
 
     if (updateAvailabilityDto.weekdays) {
       for (const weekday_id of updateAvailabilityDto.weekdays) {
-        const availability = await this.availabilityRepository.updateByBusinessWeekDay(business_id, {
-          ...updateAvailabilityDto,
-          weekdays_id: weekday_id,
-          business_id,
-        });
+        const availability =
+          await this.availabilityRepository.updateByBusinessWeekDay(
+            business_id,
+            {
+              ...updateAvailabilityDto,
+              weekdays_id: weekday_id,
+              business_id,
+            },
+          );
 
         if (!availability) {
           throw new BadRequestException({
@@ -263,10 +264,11 @@ export class AvailabilityService {
         availabilities.push(new Availability(availability));
       }
     } else {
-      const availability = await this.availabilityRepository.updateByBusinessWeekDay(business_id, {
-        ...updateAvailabilityDto,
-        business_id,
-      });
+      const availability =
+        await this.availabilityRepository.updateByBusinessWeekDay(business_id, {
+          ...updateAvailabilityDto,
+          business_id,
+        });
 
       if (!availability) {
         throw new BadRequestException({
