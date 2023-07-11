@@ -54,6 +54,9 @@ export class RatingRepository implements IRatingRepository {
       where: {
         business_id: businessId,
       },
+      include: {
+        User: true,
+      },
     });
 
     return ratingsByBusiness;
