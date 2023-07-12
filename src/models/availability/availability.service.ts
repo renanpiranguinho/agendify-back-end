@@ -122,9 +122,9 @@ export class AvailabilityService {
     const availability = await this.availabilityRepository.findOne(id);
 
     if (!availability) {
-      throw new BadRequestException({
+      throw new NotFoundException({
         message: 'Availability not found',
-        statusCode: HttpStatus.BAD_REQUEST,
+        statusCode: HttpStatus.NOT_FOUND,
       });
     }
 
@@ -164,7 +164,6 @@ export class AvailabilityService {
 
   async findAll() {
     const allAvailabilities = await this.availabilityRepository.findAll();
-
     return allAvailabilities.map((availability) => {
       availability.start_time = getStringFromDateTime(
         new Date(availability.start_time),
@@ -294,9 +293,9 @@ export class AvailabilityService {
     const availabilityExists = await this.availabilityRepository.findOne(id);
 
     if (!availabilityExists) {
-      throw new BadRequestException({
+      throw new NotFoundException({
         message: 'Availability not found',
-        statusCode: HttpStatus.BAD_REQUEST,
+        statusCode: HttpStatus.NOT_FOUND,
       });
     }
 

@@ -1,4 +1,4 @@
-import { PrismaService } from 'prisma/prisma.service';
+import { PrismaService } from '../../../../prisma/prisma.service';
 import { CreateSchedulingDto } from '../dto/create-scheduling.dto';
 import { Scheduling } from '../entities/scheduling.entity';
 import { ISchedulingRepository } from './i-scheduling.repository';

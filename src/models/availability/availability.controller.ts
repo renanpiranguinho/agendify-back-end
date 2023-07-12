@@ -77,15 +77,15 @@ export class AvailabilityController {
 
   @UseGuards(JwtAuthGuard)
   @Get('business/:businessId')
-  async findBusinessRatings(
+  async findBusinessAvailabilities(
     @Param('businessId') businessId: string,
   ): Promise<NestResponse> {
-    const businessRatings =
+    const businessAvailabilities =
       await this.availabilityService.findAvailabilityByBusiness(businessId);
 
     const response = new NestResponseBuilder()
       .setStatus(HttpStatus.OK)
-      .setBody(businessRatings)
+      .setBody(businessAvailabilities)
       .build();
 
     return response;
